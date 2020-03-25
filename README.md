@@ -5,10 +5,8 @@ Small Python implementation to create runtime monitors to achieve Stream Process
 
 How to use:
 
-``bash
+```bash
 $ python3
-
 $ import stream
-
 $ stream.parse('<your_property>')
-``
+```

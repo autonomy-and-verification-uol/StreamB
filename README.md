@@ -7,6 +7,8 @@ How to use:
 
 ``bash
 $ python3
+
 $ import stream
+
 $ stream.parse('<your_property>')
 ``

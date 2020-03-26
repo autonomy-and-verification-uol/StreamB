@@ -291,7 +291,6 @@ class StreamBuilder(StreamVisitor):
         for statement in self.statements:
             for m in re.finditer('kwargs\[\'', statement):
                 subscribers.add(statement[m.end():(m.end() + statement[m.end():].find('\']'))])
-        print('subs: ' + str(subscribers))
         i = 0
         for subscriber in subscribers:
             i =+ 1
@@ -367,7 +366,6 @@ class StreamBuilder(StreamVisitor):
     def visitTyExpr(self, ctx:StreamParser.TyExprContext):
         i = 0
         for type in ctx.types():
-            print(str(ctx.IDENTIFIER(i)) + ':' + str(type.v.text))
             self.types[str(ctx.IDENTIFIER(i))] = type.v.text
             i += 1
 
@@ -377,6 +375,8 @@ class StreamBuilder(StreamVisitor):
         # for each expression
         for expr in ctx.expr():
             label = self.visit(expr) # visit the expression
+            # update expression type to be used later on
+            self.types['expr(' + str(ctx.IDENTIFIER(i)) + ')'] = self.type
             # create the high level monitor which publish on name
             monitorName = 'monitor_' + str(self.nMonitors)
             statements = []
@@ -695,57 +695,61 @@ class StreamBuilder(StreamVisitor):
     # visit atomic proposition
     def visitProp(self, ctx:StreamParser.PropContext):
         name = ctx.name.text
-        self.type = self.types[name]
 
-        monitorName = 'monitor_' + str(self.nMonitors)
+        if name in self.types:
+            self.type = self.types[name]
 
-        statements = []
-        statements += ['#!/usr/bin/env python']
-        statements += ['import rospy']
-        statements += ['import intervals']
-        statements += ['import sys']
-        statements += ['from threading import *']
-        statements += ['from monitor.msg import *']
-        statements += ['from std_msgs.msg import *']
-        statements += ['']
-        statements += ['ws_lock = Lock()']
-        statements += ['last = None']
-        # create a callback for the proposition
-        statements += ['def callback(data):']
-        statements += ['\tglobal last']
-        statements += ['\tws_lock.acquire()']
-        statements += ['\tlast = data.data']
-        statements += ['\tws_lock.release()']
-        # create a callback for the clock (in order to sample the data accordingly)
-        statements += ['def callbackClock(data):']
-        statements += ['\tws_lock.acquire()']
-        statements += ['\tif last is not None: ']
-        statements += ['\t\tmsg = {ty}()'.format(ty=StreamBuilder.convertToTimed(self.type))]
-        statements += ['\t\tmsg.time = data.data']
-        statements += ['\t\tmsg.value = last']
-        statements += ['\t\tpub.publish(msg)'] # republish last observed data
-        statements += ['\tws_lock.release()']
-        statements += ['']
-        statements += ['def main(argv):']
-        statements += ['\tglobal pub']
-        statements += ['\trospy.init_node(\'{monitorName}\', anonymous=True)'.format(monitorName=monitorName)]
-        # subscribe on the proposition
-        statements += ['\trospy.Subscriber(\'{topic}\', {ty}, callback)'.format(topic=name, ty=StreamBuilder.convert(self.type))]
-        statements += ['\trospy.Subscriber(\'clock\', Int64, callbackClock)']
-        # publish on an updated topic (adding '_' to the topic name)
-        statements += ['\tpub = rospy.Publisher(name = \'{topic}\', data_class = {ty}, latch = True, queue_size = 1000)'.format(topic=name+'_', ty=StreamBuilder.convertToTimed(self.type))]
-        statements += ['\trospy.spin()']
-        statements += ['if __name__ == \'__main__\':']
-        statements += ['\tmain(sys.argv)']
+            monitorName = 'monitor_' + str(self.nMonitors)
 
-        source = '\n'.join(statements)
+            statements = []
+            statements += ['#!/usr/bin/env python']
+            statements += ['import rospy']
+            statements += ['import intervals']
+            statements += ['import sys']
+            statements += ['from threading import *']
+            statements += ['from monitor.msg import *']
+            statements += ['from std_msgs.msg import *']
+            statements += ['']
+            statements += ['ws_lock = Lock()']
+            statements += ['last = None']
+            # create a callback for the proposition
+            statements += ['def callback(data):']
+            statements += ['\tglobal last']
+            statements += ['\tws_lock.acquire()']
+            statements += ['\tlast = data.data']
+            statements += ['\tws_lock.release()']
+            # create a callback for the clock (in order to sample the data accordingly)
+            statements += ['def callbackClock(data):']
+            statements += ['\tws_lock.acquire()']
+            statements += ['\tif last is not None: ']
+            statements += ['\t\tmsg = {ty}()'.format(ty=StreamBuilder.convertToTimed(self.type))]
+            statements += ['\t\tmsg.time = data.data']
+            statements += ['\t\tmsg.value = last']
+            statements += ['\t\tpub.publish(msg)'] # republish last observed data
+            statements += ['\tws_lock.release()']
+            statements += ['']
+            statements += ['def main(argv):']
+            statements += ['\tglobal pub']
+            statements += ['\trospy.init_node(\'{monitorName}\', anonymous=True)'.format(monitorName=monitorName)]
+            # subscribe on the proposition
+            statements += ['\trospy.Subscriber(\'{topic}\', {ty}, callback)'.format(topic=name, ty=StreamBuilder.convert(self.type))]
+            statements += ['\trospy.Subscriber(\'clock\', Int64, callbackClock)']
+            # publish on an updated topic (adding '_' to the topic name)
+            statements += ['\tpub = rospy.Publisher(name = \'{topic}\', data_class = {ty}, latch = True, queue_size = 1000)'.format(topic=name+'_', ty=StreamBuilder.convertToTimed(self.type))]
+            statements += ['\trospy.spin()']
+            statements += ['if __name__ == \'__main__\':']
+            statements += ['\tmain(sys.argv)']
 
-        with open('./monitors/' + monitorName + '.py', 'w') as monitor:
-            monitor.write(source)
+            source = '\n'.join(statements)
 
-        self.nMonitors += 1
+            with open('./monitors/' + monitorName + '.py', 'w') as monitor:
+                monitor.write(source)
 
-        return 'kwargs[\'{}\']'.format(name + '_')
+            self.nMonitors += 1
+
+            return 'kwargs[\'{}\']'.format(name + '_')
+        else:
+            return 'kwargs[\'{}\']'.format(name)
 
     # visit integer
     def visitInt(self, ctx:StreamParser.IntContext):

@@ -1,0 +1,4 @@
+a1:int;
+a2:int;
+a = always (min a1 < a2);
+b = once [5,inf] a;

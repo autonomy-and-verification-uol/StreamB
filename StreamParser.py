@@ -61,7 +61,7 @@ def serializedATN():
         buf.write("\5\177c\3\2\2\2\177f\3\2\2\2\177i\3\2\2\2\177l\3\2\2\2")
         buf.write("\177o\3\2\2\2\177w\3\2\2\2\u0080\u0083\3\2\2\2\u0081\177")
         buf.write("\3\2\2\2\u0081\u0082\3\2\2\2\u0082\13\3\2\2\2\u0083\u0081")
-        buf.write("\3\2\2\2\u0084\u00a2\5\20\t\2\u0085\u0086\5\16\b\2\u0086")
+        buf.write("\3\2\2\2\u0084\u00a2\5\16\b\2\u0085\u0086\5\16\b\2\u0086")
         buf.write("\u0087\7\30\2\2\u0087\u0088\5\16\b\2\u0088\u00a2\3\2\2")
         buf.write("\2\u0089\u008a\5\16\b\2\u008a\u008b\7\31\2\2\u008b\u008c")
         buf.write("\5\16\b\2\u008c\u00a2\3\2\2\2\u008d\u008e\5\16\b\2\u008e")
@@ -1173,20 +1173,20 @@ class StreamParser ( Parser ):
 
 
 
-    class Atomic1Context(EvalExprContext):
+    class AggregationContext(EvalExprContext):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.EvalExprContext
             super().__init__(parser)
-            self.child = None # AtomContext
+            self.child = None # AggregationExprContext
             self.copyFrom(ctx)
 
-        def atom(self):
-            return self.getTypedRuleContext(StreamParser.AtomContext,0)
+        def aggregationExpr(self):
+            return self.getTypedRuleContext(StreamParser.AggregationExprContext,0)
 
 
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitAtomic1" ):
-                return visitor.visitAtomic1(self)
+            if hasattr( visitor, "visitAggregation" ):
+                return visitor.visitAggregation(self)
             else:
                 return visitor.visitChildren(self)
 
@@ -1351,10 +1351,10 @@ class StreamParser ( Parser ):
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,6,self._ctx)
             if la_ == 1:
-                localctx = StreamParser.Atomic1Context(self, localctx)
+                localctx = StreamParser.AggregationContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
                 self.state = 130
-                localctx.child = self.atom()
+                localctx.child = self.aggregationExpr()
                 pass
 
             elif la_ == 2:
@@ -1464,24 +1464,6 @@ class StreamParser ( Parser ):
         def copyFrom(self, ctx:ParserRuleContext):
             super().copyFrom(ctx)
 
-
-
-    class Atomic2Context(AggregationExprContext):
-
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.AggregationExprContext
-            super().__init__(parser)
-            self.child = None # AtomContext
-            self.copyFrom(ctx)
-
-        def atom(self):
-            return self.getTypedRuleContext(StreamParser.AtomContext,0)
-
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitAtomic2" ):
-                return visitor.visitAtomic2(self)
-            else:
-                return visitor.visitChildren(self)
 
 
     class TimedMaxContext(AggregationExprContext):
@@ -1636,6 +1618,24 @@ class StreamParser ( Parser ):
                 return visitor.visitChildren(self)
 
 
+    class AtomicContext(AggregationExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.AggregationExprContext
+            super().__init__(parser)
+            self.child = None # AtomContext
+            self.copyFrom(ctx)
+
+        def atom(self):
+            return self.getTypedRuleContext(StreamParser.AtomContext,0)
+
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAtomic" ):
+                return visitor.visitAtomic(self)
+            else:
+                return visitor.visitChildren(self)
+
+
     class IntContext(AggregationExprContext):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.AggregationExprContext
@@ -1663,7 +1663,7 @@ class StreamParser ( Parser ):
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,7,self._ctx)
             if la_ == 1:
-                localctx = StreamParser.Atomic2Context(self, localctx)
+                localctx = StreamParser.AtomicContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
                 self.state = 161
                 localctx.child = self.atom()

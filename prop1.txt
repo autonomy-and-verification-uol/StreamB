@@ -1,0 +1,15 @@
+back_steer_l_rad : real;
+back_steer_r_rad : real;
+front_steer_l_rad : real;
+front_steer_r_rad : real;
+back_wheel_l_vel : real;
+back_wheel_r_vel : real;
+front_wheel_l_vel : real;
+front_wheel_r_vel : real;
+
+is_turning = (back_steer_l_rad != 0 || back_steer_r_rad != 0 || front_steer_l_rad != 0 || front_steer_r_rad != 0);
+is_moving = (back_wheel_l_vel != 0 || back_wheel_r_vel != 0 || front_wheel_l_vel != 0 || front_wheel_r_vel != 0);
+
+velocity_turning_ok = always (is_turning -> (max[5] back_wheel_l_vel <= 10 && max[5] back_wheel_r_vel <= 10 && max[5] front_wheel_l_vel <= 10 && max[5] front_wheel_r_vel <= 10));
+velocity_forward_ok = always (not is_turning -> (max[5] back_wheel_l_vel <= 15 && max[5] back_wheel_r_vel <= 15 && max[5] front_wheel_l_vel <= 15 && max[5] front_wheel_r_vel <= 15));
+velocity_ok = velocity_turning_ok and velocity_forward_ok;

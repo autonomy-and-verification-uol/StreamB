@@ -119,8 +119,8 @@ class StreamVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by StreamParser#Atomic1.
-    def visitAtomic1(self, ctx:StreamParser.Atomic1Context):
+    # Visit a parse tree produced by StreamParser#Aggregation.
+    def visitAggregation(self, ctx:StreamParser.AggregationContext):
         return self.visitChildren(ctx)
 
 
@@ -159,8 +159,8 @@ class StreamVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by StreamParser#Atomic2.
-    def visitAtomic2(self, ctx:StreamParser.Atomic2Context):
+    # Visit a parse tree produced by StreamParser#Atomic.
+    def visitAtomic(self, ctx:StreamParser.AtomicContext):
         return self.visitChildren(ctx)
 
 

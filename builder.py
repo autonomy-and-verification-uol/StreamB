@@ -3,6 +3,7 @@ from StreamLexer import StreamLexer
 from StreamParser import StreamParser
 from StreamVisitor import StreamVisitor
 import re
+import os, shutil, stat
 
 class StreamBuilder(StreamVisitor):
 
@@ -17,6 +18,7 @@ class StreamBuilder(StreamVisitor):
         self.rate = 10
         self.threshold = 2
         self.debug = True
+        self.already_seen = {}
 
     def reset(self):
         self.initialization = list()
@@ -24,6 +26,7 @@ class StreamBuilder(StreamVisitor):
         self.variables = set()
         self.output = set()
         self.subscribers = set()
+        self.num = 0
 
     # convert type from Grammar to timed type in ROS
     def convertToTimed(type):
@@ -49,9 +52,11 @@ class StreamBuilder(StreamVisitor):
     def createLaunch(self):
         statements = []
         statements += ['<launch>']
-        statements += ['\t<node pkg="monitor" type="clockNode.py" name="clockNode" output="screen"/>']
-        for i in range(self.nMonitors):
-            statements += ['\t<node pkg="monitor" type="monitor_{id}.py" name="monitor_{id}" output="screen"/>'.format(id=i)]
+        #statements += ['\t<node pkg="monitor" type="clockNode.py" name="clockNode" output="screen"/>']
+        for filename in os.listdir('./monitors/'):
+            statements += ['\t<node pkg="stream" type="{fn}" name="{id}" output="screen"/>'.format(fn=filename, id=filename[:-3])]
+            st = os.stat('./monitors/' + filename)
+            os.chmod('./monitors/' + filename, st.st_mode | stat.S_IEXEC)
         statements += ['</launch>']
         source = '\n'.join(statements)
         with open('./monitors/run.launch', 'w') as launch_file:
@@ -66,7 +71,7 @@ class StreamBuilder(StreamVisitor):
         statements += ['import sys']
         statements += ['from sortedcontainers import SortedDict']
         statements += ['from threading import *']
-        statements += ['from monitor.msg import *']
+        statements += ['from stream.msg import *']
         statements += ['from std_msgs.msg import *']
         statements += ['']
         statements += ['ws_lock = Lock()']
@@ -88,6 +93,8 @@ class StreamBuilder(StreamVisitor):
                 statements += ['\tmsg = TimedBool()']
                 statements += ['\tmsg.time = data.time'] # propagate the same time
                 statements += ['\tmsg.value = data.value {op} {labelR}'.format(op=operator,labelR=labelR)] # evaluate using the given operator
+                if self.debug:
+                    statements += ['\tprint(str(data.value) + \' {op} \' + str({labelR}) + \'=\' + str(msg.value))'.format(op=operator, labelR=labelR)]
                 statements += ['\tpub.publish(msg)'] # publish the message (we do not need to wait for the right component, because it is constant)
             statements += ['\tws_lock.release()']
         # symmetrically as before, but for the right component
@@ -103,6 +110,8 @@ class StreamBuilder(StreamVisitor):
                 statements += ['\tmsg = TimedBool()']
                 statements += ['\tmsg.time = data.time']
                 statements += ['\tmsg.value = {labelL} {op} data.value'.format(op=operator,labelL=labelL)]
+                if self.debug:
+                    statements += ['\tprint(str({labelL}) + \' {op} \' + str(data.value) + \'=\' + str(msg.value))'.format(op=operator, labelL=labelL)]
                 statements += ['\tpub.publish(msg)']
             statements += ['\tws_lock.release()']
         statements += ['']
@@ -129,11 +138,11 @@ class StreamBuilder(StreamVisitor):
             statements += ['\t\tif e1[0] == \'l\':'] # identify which component is which
             statements += ['\t\t\tmsg.value = (e1[1] {op} e2[1])'.format(op=operator)]
             if self.debug:
-                statements += ['\t\t\tprint(str(e1[1]) + \' < \' + str(e2[1]) + \'=\' + str(msg.value))']
+                statements += ['\t\t\tprint(str(e1[1]) + \' {op} \' + str(e2[1]) + \'=\' + str(msg.value))'.format(op=operator)]
             statements += ['\t\telse:']
             statements += ['\t\t\tmsg.value = (e2[1] {op} e1[1])'.format(op=operator)]
             if self.debug:
-                statements += ['\t\t\tprint(str(e2[1]) + \' < \' + str(e1[1]) + \'=\' + str(msg.value))']
+                statements += ['\t\t\tprint(str(e2[1]) + \' {op} \' + str(e1[1]) + \'=\' + str(msg.value))'.format(op=operator)]
             statements += ['\t\tpub.publish(msg)']
             statements += ['\t\tdict_msgs.popitem(0)']
             statements += ['\t\tattempts = 0']
@@ -169,7 +178,7 @@ class StreamBuilder(StreamVisitor):
         statements += ['import rospy']
         statements += ['import sys']
         statements += ['from threading import *']
-        statements += ['from monitor.msg import *']
+        statements += ['from stream.msg import *']
         statements += ['from std_msgs.msg import *']
         statements += ['from queue import *']
         statements += ['']
@@ -211,12 +220,12 @@ class StreamBuilder(StreamVisitor):
         statements += ['#!/usr/bin/env python']
         statements += ['import rospy']
         statements += ['import sys']
-        statements += ['from monitor.msg import *']
+        statements += ['from stream.msg import *']
         statements += ['from std_msgs.msg import *']
         statements += ['']
         statements += ['def main(argv):']
         statements += ['\trospy.init_node(\'clockNode\', anonymous=True)']
-        statements += ['\tpub = rospy.Publisher(name = \'clock\', data_class = Int64, latch = True, queue_size = 1000)']
+        statements += ['\tpub = rospy.Publisher(name = \'stream_clock\', data_class = Int64, latch = True, queue_size = 1000)']
         statements += ['\trate = rospy.Rate({rate})'.format(rate=self.rate)]
         statements += ['\tcount = 0']
         statements += ['\twhile not rospy.is_shutdown():']
@@ -234,7 +243,7 @@ class StreamBuilder(StreamVisitor):
 
     # create a MTL monitor
     def createMTLMonitor(self):
-        classname = 'monitor_' + str(self.nMonitors)
+        classname = 'mtl_monitor_' + str(self.nMonitors)
 
         statements = []
         statements += ['#!/usr/bin/env python']
@@ -242,7 +251,7 @@ class StreamBuilder(StreamVisitor):
         statements += ['import intervals']
         statements += ['import sys']
         statements += ['from threading import *']
-        statements += ['from monitor.msg import *']
+        statements += ['from stream.msg import *']
         statements += ['from std_msgs.msg import *']
         statements += ['from sortedcontainers import *']
         statements += ['']
@@ -285,20 +294,22 @@ class StreamBuilder(StreamVisitor):
         statements += ['\tdef output(self):']
         statements += ['\t\treturn {}'.format(self.output)]
         statements += ['']
-        statements += ['dict_topic = {']
+        #statements += ['dict_topic = {']
         # extract the topics of interest (we need to subscribe to all the lower monitors providing the info we need in the MTL property)
         subscribers = set()
         for statement in self.statements:
             for m in re.finditer('kwargs\[\'', statement):
                 subscribers.add(statement[m.end():(m.end() + statement[m.end():].find('\']'))])
-        i = 0
-        for subscriber in subscribers:
-            i =+ 1
-            if i != len(subscribers):
-                statements += ['\t\'{topic}\' : False,'.format(topic=subscriber)]
-            else:
-                statements += ['\t\'{topic}\' : False'.format(topic=subscriber)]
-        statements += ['}']
+        for m in re.finditer('kwargs\[\'', self.output):
+            subscribers.add(self.output[m.end():(m.end() + self.output[m.end():].find('\']'))])
+        # i = 0
+        # for subscriber in subscribers:
+        #     i =+ 1
+        #     if i != len(subscribers):
+        #         statements += ['\t\'{topic}\' : False,'.format(topic=subscriber)]
+        #     else:
+        #         statements += ['\t\'{topic}\' : False'.format(topic=subscriber)]
+        # statements += ['}']
         statements += ['']
         statements += ['dict_msgs = SortedDict()']
         # create callbacks for each one of them
@@ -348,11 +359,11 @@ class StreamBuilder(StreamVisitor):
 
         source = '\n'.join(statements)
 
-        with open('./monitors/monitor_' + str(self.nMonitors) + '.py', 'w') as monitor:
+        with open('./monitors/mtl_monitor_' + str(self.nMonitors) + '.py', 'w') as monitor:
             monitor.write(source)
 
         self.nMonitors += 1
-        return 'kwargs[\'monitor_' + str(self.nMonitors - 1) + '\']'
+        return 'kwargs[\'mtl_monitor_' + str(self.nMonitors - 1) + '\']'
 
 
     # visit the main property containing the list of propositions with their types
@@ -378,27 +389,27 @@ class StreamBuilder(StreamVisitor):
             # update expression type to be used later on
             self.types['expr(' + str(ctx.IDENTIFIER(i)) + ')'] = self.type
             # create the high level monitor which publish on name
-            monitorName = 'monitor_' + str(self.nMonitors)
+            monitorName = 'monitor_' + str(ctx.IDENTIFIER(i))
             statements = []
             statements += ['#!/usr/bin/env python']
             statements += ['import rospy']
             statements += ['import intervals']
             statements += ['import sys']
             statements += ['from threading import *']
-            statements += ['from monitor.msg import *']
+            statements += ['from stream.msg import *']
             statements += ['from std_msgs.msg import *']
             statements += ['']
             # create the callback on the result for the lower level monitor
             statements += ['def callback(data):']
             statements += ['\tpub.publish(data)'] # repropagate the result on the proper higher level predicate
             if self.debug:
-                statements += ['\tprint(\'{topic} = \' + str(data))'.format(topic=ctx.IDENTIFIER(i))]
+                statements += ['\tprint(\'{topic} = \' + str(data.value))'.format(topic=ctx.IDENTIFIER(i))]
             statements += ['']
             statements += ['def main(argv):']
             statements += ['\tglobal pub']
             statements += ['\trospy.init_node(\'{monitorName}\', anonymous=True)'.format(monitorName=monitorName)]
-            statements += ['\trospy.Subscriber(\'{topic}\', TimedBool, callback)'.format(topic=label[8:-2])]
-            statements += ['\tpub = rospy.Publisher(name = \'{topic}\', data_class = TimedBool, latch = True, queue_size = 1000)'.format(topic=ctx.IDENTIFIER(i))]
+            statements += ['\trospy.Subscriber(\'{topic}\', {ty}, callback)'.format(topic=label[8:-2], ty=StreamBuilder.convertToTimed(self.type))]
+            statements += ['\tpub = rospy.Publisher(name = \'{topic}\', data_class = {ty}, latch = True, queue_size = 1000)'.format(topic=ctx.IDENTIFIER(i), ty=StreamBuilder.convertToTimed(self.type))]
             statements += ['\trospy.spin()']
             statements += ['if __name__ == \'__main__\':']
             statements += ['\tmain(sys.argv)']
@@ -408,7 +419,7 @@ class StreamBuilder(StreamVisitor):
             with open('./monitors/' + monitorName + '.py', 'w') as monitor:
                 monitor.write(source)
 
-            self.nMonitors += 1
+            #self.nMonitors += 1
             i += 1
         return 'kwargs[\'monitor_' + str(self.nMonitors) + '\']'
 
@@ -416,22 +427,37 @@ class StreamBuilder(StreamVisitor):
     def visitAtomicExpression(self, ctx:StreamParser.AtomicExpressionContext):
         self.reset()
         self.output = self.visit(ctx.child)
-        return self.createMTLMonitor()
+        if type(ctx.child) is StreamParser.EvaluationContext:
+            return self.output
+        else:
+            return self.createMTLMonitor()
 
     # visit (MTLexpr and MTLexpr)
     def visitAnd(self, ctx:StreamParser.AndContext):
         self.reset()
         self.output = self.visit(ctx.left) # visit left operand
-        labelL = self.createMTLMonitor() # create the corresponding MTL monitor
+        if type(ctx.left) is StreamParser.EvaluationContext:
+            labelL = self.output
+        else:
+            labelL = self.createMTLMonitor() # create the corresponding MTL monitor
         typeL = self.type
         self.reset()
         self.output = self.visit(ctx.right) # visit right operand
-        labelR = self.createMTLMonitor() # create the corresponding MTL monitor
+        if type(ctx.right) is StreamParser.EvaluationContext:
+            labelR = self.output
+        else:
+            labelR = self.createMTLMonitor() # create the corresponding MTL monitor
         typeR = self.type
-        # create the composition monitor for and
-        self.createCompositionMonitor('monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, ' and ')
-        self.nMonitors += 1
-        return 'kwargs[\'monitor_' + str(self.nMonitors - 1) + '\']'
+        operator = ' and '
+        self.type = 'TimedBool'
+        if labelL + operator + labelR in self.already_seen:
+            return 'kwargs[\'' + self.already_seen[labelL + operator + labelR] + '\']'
+        else:
+            # create the composition monitor for and
+            self.createCompositionMonitor('and_monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, operator)
+            self.nMonitors += 1
+            self.already_seen[labelL + operator + labelR] = 'kwargs[\'and_monitor_' + str(self.nMonitors - 1) + '\']'
+            return 'kwargs[\'and_monitor_' + str(self.nMonitors - 1) + '\']'
 
     # visit (MTLexpr or MTLexpr)
     def visitOr(self, ctx:StreamParser.OrContext):
@@ -443,13 +469,27 @@ class StreamBuilder(StreamVisitor):
         self.output = self.visit(ctx.right) # visit right operand
         labelR = self.createMTLMonitor() # create the corresponding MTL monitor
         typeR = self.type
-        # create the composition monitor for or
-        self.createCompositionMonitor('monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, ' or ')
-        self.nMonitors += 1
-        return 'kwargs[\'monitor_' + str(self.nMonitors - 1) + '\']'
+        operator = ' or '
+        self.type = 'TimedBool'
+        if labelL + operator + labelR in self.already_seen:
+            return 'kwargs[\'' + self.already_seen[labelL + operator + labelR] + '\']'
+        else:
+            # create the composition monitor for and
+            self.createCompositionMonitor('or_monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, operator)
+            self.nMonitors += 1
+            self.already_seen[labelL + operator + labelR] = 'kwargs[\'and_monitor_' + str(self.nMonitors - 1) + '\']'
+            return 'kwargs[\'and_monitor_' + str(self.nMonitors - 1) + '\']'
 
     # propagate the visit to the lower expression
     def visitEvaluation(self, ctx:StreamParser.EvaluationContext):
+        label = str(self.visit(ctx.child))
+        if label.startswith('kwargs'):
+            label = label[8:-2]
+        #self.subscribers.add(label)
+        return 'kwargs[\'{}\']'.format(label)
+
+    # propagate the visit to the lower expression
+    def visitAggregation(self, ctx:StreamParser.AggregationContext):
         label = str(self.visit(ctx.child))
         if label.startswith('kwargs'):
             label = label[8:-2]
@@ -462,9 +502,15 @@ class StreamBuilder(StreamVisitor):
         typeL = self.type
         labelR = self.visit(ctx.right)
         typeR = self.type
-        self.createCompositionMonitor('monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, ' < ')
-        self.nMonitors += 1
-        return 'kwargs[\'monitor_' + str(self.nMonitors - 1) + '\']'
+        operator = ' < '
+        self.type = 'TimedBool'
+        if labelL + operator + labelR in self.already_seen:
+            return 'kwargs[\'' + self.already_seen[labelL + operator + labelR] + '\']'
+        else:
+            self.createCompositionMonitor('less_monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, ' < ')
+            self.already_seen[labelL + operator + labelR] = 'less_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'less_monitor_' + str(self.nMonitors - 1) + '\']'
 
     # visit (expr <= expr)
     def visitLessEq(self, ctx:StreamParser.LessEqContext):
@@ -472,9 +518,15 @@ class StreamBuilder(StreamVisitor):
         typeL = self.type
         labelR = self.visit(ctx.right)
         typeR = self.type
-        self.createCompositionMonitor('monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, ' <= ')
-        self.nMonitors += 1
-        return 'kwargs[\'monitor_' + str(self.nMonitors - 1) + '\']'
+        operator = ' <= '
+        self.type = 'TimedBool'
+        if labelL + operator + labelR in self.already_seen:
+            return 'kwargs[\'' + self.already_seen[labelL + operator + labelR] + '\']'
+        else:
+            self.createCompositionMonitor('less_eq_monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, operator)
+            self.already_seen[labelL + operator + labelR] = 'less_eq_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'less_eq_monitor_' + str(self.nMonitors - 1) + '\']'
 
     # visit (expr > expr)
     def visitGreater(self, ctx:StreamParser.GreaterContext):
@@ -482,9 +534,15 @@ class StreamBuilder(StreamVisitor):
         typeL = self.type
         labelR = self.visit(ctx.right)
         typeR = self.type
-        self.createCompositionMonitor('monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, ' > ')
-        self.nMonitors += 1
-        return 'kwargs[\'monitor_' + str(self.nMonitors - 1) + '\']'
+        operator = ' > '
+        self.type = 'TimedBool'
+        if labelL + operator + labelR in self.already_seen:
+            return 'kwargs[\'' + self.already_seen[labelL + operator + labelR] + '\']'
+        else:
+            self.createCompositionMonitor('greater_monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, operator)
+            self.already_seen[labelL + operator + labelR] = 'greater_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'greater_monitor_' + str(self.nMonitors - 1) + '\']'
 
     # visit (expr >= expr)
     def visitGreaterEq(self, ctx:StreamParser.GreaterEqContext):
@@ -492,9 +550,15 @@ class StreamBuilder(StreamVisitor):
         typeL = self.type
         labelR = self.visit(ctx.right)
         typeR = self.type
-        self.createCompositionMonitor('monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, ' >= ')
-        self.nMonitors += 1
-        return 'kwargs[\'monitor_' + str(self.nMonitors - 1) + '\']'
+        operator = ' >= '
+        self.type = 'TimedBool'
+        if labelL + operator + labelR in self.already_seen:
+            return 'kwargs[\'' + self.already_seen[labelL + operator + labelR] + '\']'
+        else:
+            self.createCompositionMonitor('greater_eq_monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, operator)
+            self.already_seen[labelL + operator + labelR] = 'greater_eq_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'greater_eq_monitor_' + str(self.nMonitors - 1) + '\']'
 
     # visit (expr == expr)
     def visitEq(self, ctx:StreamParser.EqContext):
@@ -502,9 +566,15 @@ class StreamBuilder(StreamVisitor):
         typeL = self.type
         labelR = self.visit(ctx.right)
         typeR = self.type
-        self.createCompositionMonitor('monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, ' == ')
-        self.nMonitors += 1
-        return 'kwargs[\'monitor_' + str(self.nMonitors - 1) + '\']'
+        operator = ' == '
+        self.type = 'TimedBool'
+        if labelL + operator + labelR in self.already_seen:
+            return 'kwargs[\'' + self.already_seen[labelL + operator + labelR] + '\']'
+        else:
+            self.createCompositionMonitor('eq_monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, operator)
+            self.already_seen[labelL + operator + labelR] = 'eq_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'eq_monitor_' + str(self.nMonitors - 1) + '\']'
 
     # visit (expr != expr)
     def visitNeq(self, ctx:StreamParser.NeqContext):
@@ -512,9 +582,15 @@ class StreamBuilder(StreamVisitor):
         typeL = self.type
         labelR = self.visit(ctx.right)
         typeR = self.type
-        self.createCompositionMonitor('monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, ' != ')
-        self.nMonitors += 1
-        return 'kwargs[\'monitor_' + str(self.nMonitors - 1) + '\']'
+        operator = ' != '
+        self.type = 'TimedBool'
+        if labelL + operator + labelR in self.already_seen:
+            return 'kwargs[\'' + self.already_seen[labelL + operator + labelR] + '\']'
+        else:
+            self.createCompositionMonitor('neq_monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, operator)
+            self.already_seen[labelL + operator + labelR] = 'neq_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'neq_monitor_' + str(self.nMonitors - 1) + '\']'
 
     # visit (min expr)
     def visitMin(self, ctx:StreamParser.MinContext):
@@ -530,10 +606,13 @@ class StreamBuilder(StreamVisitor):
 
         aggrFunc = '\n'.join(statements)
 
-        self.createAggregationMonitor('monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
-
-        self.nMonitors += 1
-        return 'kwargs[\'monitor_' + str(self.nMonitors - 1) + '\']'
+        if 'min' + label in self.already_seen:
+            return 'kwargs[\'' + self.already_seen['min' + label] + '\']'
+        else:
+            self.createAggregationMonitor('min_monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
+            self.already_seen['min' + label] = 'min_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'min_monitor_' + str(self.nMonitors - 1) + '\']'
 
     # visit (min [l] expr)
     def visitTimedMin(self, ctx:StreamParser.TimedMinContext):
@@ -570,10 +649,13 @@ class StreamBuilder(StreamVisitor):
 
         aggrFunc = '\n'.join(statements)
 
-        self.createAggregationMonitor('monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
-
-        self.nMonitors += 1
-        return 'kwargs[\'monitor_' + str(self.nMonitors - 1) + '\']'
+        if 'tmin' + label in self.already_seen:
+            return 'kwargs[\'' + self.already_seen['tmin' + label] + '\']'
+        else:
+            self.createAggregationMonitor('tmin_monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
+            self.already_seen['tmin' + label] = 'tmin_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'tmin_monitor_' + str(self.nMonitors - 1) + '\']'
 
     # visit (max expr)
     def visitMax(self, ctx:StreamParser.MaxContext):
@@ -589,14 +671,18 @@ class StreamBuilder(StreamVisitor):
 
         aggrFunc = '\n'.join(statements)
 
-        self.createAggregationMonitor('monitor_' + str(self.nMonitors - 1), aggrFunc, self.type, label)
-
-        self.nMonitors += 1
-        return 'kwargs[\'monitor_' + str(self.nMonitors - 1) + '\']'
+        if 'max' + label in self.already_seen:
+            return 'kwargs[\'' + self.already_seen['max' + label] + '\']'
+        else:
+            self.createAggregationMonitor('max_monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
+            self.already_seen['max' + label] = 'max_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'max_monitor_' + str(self.nMonitors - 1) + '\']'
 
     # visit (max [l] expr)
     def visitTimedMax(self, ctx:StreamParser.TimedMaxContext):
         label = self.visit(ctx.child)
+        interval = ctx.l.text
         # create the aggregation function to pass to the aggregation monitor creator
         statements = []
         statements += ['from queue import *']
@@ -628,10 +714,13 @@ class StreamBuilder(StreamVisitor):
 
         aggrFunc = '\n'.join(statements)
 
-        self.createAggregationMonitor('monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
-
-        self.nMonitors += 1
-        return 'kwargs[\'monitor_' + str(self.nMonitors - 1) + '\']'
+        if 'tmax' + label in self.already_seen:
+            return 'kwargs[\'' + self.already_seen['tmax' + label] + '\']'
+        else:
+            self.createAggregationMonitor('tmax_monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
+            self.already_seen['tmax' + label] = 'tmax_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'tmax_monitor_' + str(self.nMonitors - 1) + '\']'
 
     # visit (avg expr)
     def visitAvg(self, ctx:StreamParser.AvgContext):
@@ -648,14 +737,18 @@ class StreamBuilder(StreamVisitor):
 
         aggrFunc = '\n'.join(statements)
 
-        self.createAggregationMonitor('monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
-
-        self.nMonitors += 1
-        return 'kwargs[\'monitor_' + str(self.nMonitors - 1) + '\']'
+        if 'avg' + label in self.already_seen:
+            return 'kwargs[\'' + self.already_seen['avg' + label] + '\']'
+        else:
+            self.createAggregationMonitor('avg_monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
+            self.already_seen['avg' + label] = 'avg_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'avg_monitor_' + str(self.nMonitors - 1) + '\']'
 
     # visit (avg [l] expr)
     def visitTimedAvg(self, ctx:StreamParser.TimedAvgContext):
         label = self.visit(ctx.child)
+        interval = ctx.l.text
         # create the aggregation function to pass to the aggregation monitor creator
         statements = []
         statements += ['from queue import *']
@@ -687,19 +780,25 @@ class StreamBuilder(StreamVisitor):
 
         aggrFunc = '\n'.join(statements)
 
-        self.createAggregationMonitor('monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
-
-        self.nMonitors += 1
-        return 'kwargs[\'monitor_' + str(self.nMonitors - 1) + '\']'
+        if 'tavg' + label in self.already_seen:
+            return 'kwargs[\'' + self.already_seen['tavg' + label] + '\']'
+        else:
+            self.createAggregationMonitor('tavg_monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
+            self.already_seen['tavg' + label] = 'tavg_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'tavg_monitor_' + str(self.nMonitors - 1) + '\']'
 
     # visit atomic proposition
     def visitProp(self, ctx:StreamParser.PropContext):
         name = ctx.name.text
 
         if name in self.types:
+            if name in self.already_seen:
+                return 'kwargs[\'' + self.already_seen[name] + '\']'
+
             self.type = self.types[name]
 
-            monitorName = 'monitor_' + str(self.nMonitors)
+            monitorName = 'monitor_' + name
 
             statements = []
             statements += ['#!/usr/bin/env python']
@@ -707,7 +806,7 @@ class StreamBuilder(StreamVisitor):
             statements += ['import intervals']
             statements += ['import sys']
             statements += ['from threading import *']
-            statements += ['from monitor.msg import *']
+            statements += ['from stream.msg import *']
             statements += ['from std_msgs.msg import *']
             statements += ['']
             statements += ['ws_lock = Lock()']
@@ -733,7 +832,7 @@ class StreamBuilder(StreamVisitor):
             statements += ['\trospy.init_node(\'{monitorName}\', anonymous=True)'.format(monitorName=monitorName)]
             # subscribe on the proposition
             statements += ['\trospy.Subscriber(\'{topic}\', {ty}, callback)'.format(topic=name, ty=StreamBuilder.convert(self.type))]
-            statements += ['\trospy.Subscriber(\'clock\', Int64, callbackClock)']
+            statements += ['\trospy.Subscriber(\'stream_clock\', Int64, callbackClock)']
             # publish on an updated topic (adding '_' to the topic name)
             statements += ['\tpub = rospy.Publisher(name = \'{topic}\', data_class = {ty}, latch = True, queue_size = 1000)'.format(topic=name+'_', ty=StreamBuilder.convertToTimed(self.type))]
             statements += ['\trospy.spin()']
@@ -745,7 +844,7 @@ class StreamBuilder(StreamVisitor):
             with open('./monitors/' + monitorName + '.py', 'w') as monitor:
                 monitor.write(source)
 
-            self.nMonitors += 1
+            #self.nMonitors += 1
 
             return 'kwargs[\'{}\']'.format(name + '_')
         else:

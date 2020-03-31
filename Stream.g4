@@ -34,7 +34,7 @@ mtlExpr : child=evalExpr                                               # Evaluat
      | '(' child=mtlExpr ')'                                           # Grouping1
      ;
 
-evalExpr : child=atom                                                  # Atomic1
+evalExpr : child=aggregationExpr                                       # Aggregation
      | left=aggregationExpr ('<') right=aggregationExpr                # Less
      | left=aggregationExpr ('<=') right=aggregationExpr               # LessEq
      | left=aggregationExpr ('>') right=aggregationExpr                # Greater
@@ -43,7 +43,7 @@ evalExpr : child=atom                                                  # Atomic1
      | left=aggregationExpr ('!=') right=aggregationExpr               # Neq
      | '(' child=evalExpr ')'                                          # Grouping2
      ;
-aggregationExpr : child=atom                                           # Atomic2
+aggregationExpr : child=atom                                           # Atomic
      | child=NUMBER                                                    # Int
      | child=REAL                                                      # Real
      | ('min') child=aggregationExpr                                   # Min

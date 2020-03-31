@@ -1,15 +1,43 @@
-
 from builder import *
+from antlr4.error.ErrorListener import ErrorListener
+
+class StreamErrorListener( ErrorListener ):
+
+    def __init__(self):
+        super(StreamErrorListener, self).__init__()
+
+    def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+        raise Exception("Syntax error: " + msg)
+
+def resetMonitorsFolder():
+    folder = './monitors'
+    if not os.path.exists(folder):
+        os.mkdir(folder)
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 def parse(pattern):
-    lexer = StreamLexer(InputStream(pattern))
-    stream = CommonTokenStream(lexer)
-    parser = StreamParser(stream)
-    tree = parser.propertyExpr()
+    try:
+        resetMonitorsFolder()
+        lexer = StreamLexer(InputStream(pattern))
+        stream = CommonTokenStream(lexer)
+        parser = StreamParser(stream)
+        parser.addErrorListener(StreamErrorListener())
+        tree = parser.propertyExpr()
 
-    builder = StreamBuilder()
-    builder.visit(tree)
-    builder.createLaunch()
+        builder = StreamBuilder()
+        builder.visit(tree)
+        builder.createLaunch()
+    except Exception as e:
+        print(str(e))
+
 
 def parseFile(file):
     with open(file, 'r') as content_file:

@@ -436,14 +436,14 @@ class StreamBuilder(StreamVisitor):
     def visitAnd(self, ctx:StreamParser.AndContext):
         self.reset()
         self.output = self.visit(ctx.left) # visit left operand
-        if type(ctx.left) is StreamParser.EvaluationContext:
+        if isinstance(ctx.left, (StreamParser.EvaluationContext, StreamParser.AndContext, StreamParser.OrContext)):
             labelL = self.output
         else:
             labelL = self.createMTLMonitor() # create the corresponding MTL monitor
         typeL = self.type
         self.reset()
         self.output = self.visit(ctx.right) # visit right operand
-        if type(ctx.right) is StreamParser.EvaluationContext:
+        if isinstance(ctx.left, (StreamParser.EvaluationContext, StreamParser.AndContext, StreamParser.OrContext)):
             labelR = self.output
         else:
             labelR = self.createMTLMonitor() # create the corresponding MTL monitor
@@ -463,11 +463,17 @@ class StreamBuilder(StreamVisitor):
     def visitOr(self, ctx:StreamParser.OrContext):
         self.reset()
         self.output = self.visit(ctx.left) # visit left operand
-        labelL = self.createMTLMonitor() # create the corresponding MTL monitor
+        if isinstance(ctx.left, (StreamParser.EvaluationContext, StreamParser.AndContext, StreamParser.OrContext)):
+            labelL = self.output
+        else:
+            labelL = self.createMTLMonitor() # create the corresponding MTL monitor
         typeL = self.type
         self.reset()
         self.output = self.visit(ctx.right) # visit right operand
-        labelR = self.createMTLMonitor() # create the corresponding MTL monitor
+        if isinstance(ctx.left, (StreamParser.EvaluationContext, StreamParser.AndContext, StreamParser.OrContext)):
+            labelR = self.output
+        else:
+            labelR = self.createMTLMonitor() # create the corresponding MTL monitor
         typeR = self.type
         operator = ' or '
         self.type = 'TimedBool'
@@ -1046,9 +1052,9 @@ class StreamBuilder(StreamVisitor):
         return 'self.output_timed({})'.format(label)
 
     # Visit a parse tree produced by StreamParser#Grouping.
-    def visitGrouping1(self, ctx:StreamParser.Grouping1Context):
+    def visitGrouping(self, ctx:StreamParser.GroupingContext):
         return self.visit(ctx.child)
-    def visitGrouping2(self, ctx:StreamParser.Grouping2Context):
-        return self.visit(ctx.child)
-    def visitGrouping3(self, ctx:StreamParser.Grouping3Context):
-        return self.visit(ctx.child)
+    # def visitGrouping2(self, ctx:StreamParser.Grouping2Context):
+    #     return self.visit(ctx.child)
+    # def visitGrouping3(self, ctx:StreamParser.Grouping3Context):
+    #     return self.visit(ctx.child)

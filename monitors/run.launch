@@ -1,41 +1,9 @@
 <launch>
-	<node pkg="stream" type="neq_monitor_3.py" name="neq_monitor_3" output="screen"/>
-	<node pkg="stream" type="less_eq_monitor_19.py" name="less_eq_monitor_19" output="screen"/>
-	<node pkg="stream" type="tmax_monitor_10.py" name="tmax_monitor_10" output="screen"/>
-	<node pkg="stream" type="monitor_velocity_turning_ok.py" name="monitor_velocity_turning_ok" output="screen"/>
 	<node pkg="stream" type="clockNode.py" name="clockNode" output="screen"/>
-	<node pkg="stream" type="less_eq_monitor_22.py" name="less_eq_monitor_22" output="screen"/>
-	<node pkg="stream" type="neq_monitor_5.py" name="neq_monitor_5" output="screen"/>
-	<node pkg="stream" type="neq_monitor_0.py" name="neq_monitor_0" output="screen"/>
-	<node pkg="stream" type="mtl_monitor_9.py" name="mtl_monitor_9" output="screen"/>
-	<node pkg="stream" type="monitor_front_wheel_l_vel.py" name="monitor_front_wheel_l_vel" output="screen"/>
-	<node pkg="stream" type="monitor_velocity_ok.py" name="monitor_velocity_ok" output="screen"/>
-	<node pkg="stream" type="tmax_monitor_14.py" name="tmax_monitor_14" output="screen"/>
-	<node pkg="stream" type="mtl_monitor_18.py" name="mtl_monitor_18" output="screen"/>
-	<node pkg="stream" type="neq_monitor_2.py" name="neq_monitor_2" output="screen"/>
-	<node pkg="stream" type="monitor_back_wheel_r_vel.py" name="monitor_back_wheel_r_vel" output="screen"/>
-	<node pkg="stream" type="less_eq_monitor_11.py" name="less_eq_monitor_11" output="screen"/>
-	<node pkg="stream" type="neq_monitor_8.py" name="neq_monitor_8" output="screen"/>
-	<node pkg="stream" type="and_monitor_24.py" name="and_monitor_24" output="screen"/>
-	<node pkg="stream" type="monitor_back_steer_l_rad.py" name="monitor_back_steer_l_rad" output="screen"/>
-	<node pkg="stream" type="monitor_back_wheel_l_vel.py" name="monitor_back_wheel_l_vel" output="screen"/>
-	<node pkg="stream" type="tmax_monitor_16.py" name="tmax_monitor_16" output="screen"/>
-	<node pkg="stream" type="tmax_monitor_12.py" name="tmax_monitor_12" output="screen"/>
-	<node pkg="stream" type="neq_monitor_7.py" name="neq_monitor_7" output="screen"/>
-	<node pkg="stream" type="mtl_monitor_4.py" name="mtl_monitor_4" output="screen"/>
-	<node pkg="stream" type="neq_monitor_1.py" name="neq_monitor_1" output="screen"/>
-	<node pkg="stream" type="monitor_back_steer_r_rad.py" name="monitor_back_steer_r_rad" output="screen"/>
-	<node pkg="stream" type="less_eq_monitor_20.py" name="less_eq_monitor_20" output="screen"/>
-	<node pkg="stream" type="monitor_front_steer_l_rad.py" name="monitor_front_steer_l_rad" output="screen"/>
-	<node pkg="stream" type="monitor_is_turning.py" name="monitor_is_turning" output="screen"/>
-	<node pkg="stream" type="monitor_front_wheel_r_vel.py" name="monitor_front_wheel_r_vel" output="screen"/>
-	<node pkg="stream" type="monitor_front_steer_r_rad.py" name="monitor_front_steer_r_rad" output="screen"/>
-	<node pkg="stream" type="neq_monitor_6.py" name="neq_monitor_6" output="screen"/>
-	<node pkg="stream" type="mtl_monitor_23.py" name="mtl_monitor_23" output="screen"/>
-	<node pkg="stream" type="monitor_is_moving.py" name="monitor_is_moving" output="screen"/>
-	<node pkg="stream" type="less_eq_monitor_13.py" name="less_eq_monitor_13" output="screen"/>
-	<node pkg="stream" type="less_eq_monitor_17.py" name="less_eq_monitor_17" output="screen"/>
-	<node pkg="stream" type="less_eq_monitor_15.py" name="less_eq_monitor_15" output="screen"/>
-	<node pkg="stream" type="less_eq_monitor_21.py" name="less_eq_monitor_21" output="screen"/>
-	<node pkg="stream" type="monitor_velocity_forward_ok.py" name="monitor_velocity_forward_ok" output="screen"/>
+	<node pkg="stream" type="monitor_a2.py" name="monitor_a2" output="screen"/>
+	<node pkg="stream" type="monitor_a1.py" name="monitor_a1" output="screen"/>
+	<node pkg="stream" type="monitor_a.py" name="monitor_a" output="screen"/>
+	<node pkg="stream" type="mtl_monitor_0.py" name="mtl_monitor_0" output="screen"/>
+	<node pkg="stream" type="and_monitor_2.py" name="and_monitor_2" output="screen"/>
+	<node pkg="stream" type="mtl_monitor_1.py" name="mtl_monitor_1" output="screen"/>
 </launch>

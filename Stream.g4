@@ -7,8 +7,8 @@ tyExpr : (tname=IDENTIFIER (':') t=types ';')*;
 namedExpr : (name=IDENTIFIER ('=') child=expr ';')+;
 
 expr : child=mtlExpr                                                   # AtomicExpression
-     | left=mtlExpr ('and') right=mtlExpr                              # And
-     | left=mtlExpr ('or') right=mtlExpr                               # Or
+     | left=expr ('and') right=expr                              	     # And
+     | left=expr ('or') right=expr                                     # Or
      ;
 
 mtlExpr : child=evalExpr                                               # Evaluation
@@ -30,8 +30,6 @@ mtlExpr : child=evalExpr                                               # Evaluat
      | left=mtlExpr 'since' right=mtlExpr                                 # Since
      | left=mtlExpr 'since' '[' l=NUMBER ',' u=NUMBER ']' right=mtlExpr   # TimedSince
      | left=mtlExpr 'since' '[' l=NUMBER ',' 'inf' ']' right=mtlExpr      # TimedSinceInf
-
-     | '(' child=mtlExpr ')'                                           # Grouping1
      ;
 
 evalExpr : child=aggregationExpr                                       # Aggregation
@@ -41,7 +39,6 @@ evalExpr : child=aggregationExpr                                       # Aggrega
      | left=aggregationExpr ('>=') right=aggregationExpr               # GreaterEq
      | left=aggregationExpr ('==') right=aggregationExpr               # Eq
      | left=aggregationExpr ('!=') right=aggregationExpr               # Neq
-     | '(' child=evalExpr ')'                                          # Grouping2
      ;
 aggregationExpr : child=atom                                           # Atomic
      | child=NUMBER                                                    # Int
@@ -52,7 +49,7 @@ aggregationExpr : child=atom                                           # Atomic
      | ('max') '[' l=NUMBER ']' child=aggregationExpr                  # TimedMax
      | ('avg') child=aggregationExpr                                   # Avg
      | ('avg') '[' l=NUMBER ']' child=aggregationExpr                  # TimedAvg
-     | '(' child=aggregationExpr ')'                                   # Grouping3
+     | '(' child=expr ')'                                              # Grouping
     ;
 
 atom : name=IDENTIFIER                         # Prop

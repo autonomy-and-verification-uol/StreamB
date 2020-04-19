@@ -24,6 +24,11 @@ class StreamVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by StreamParser#Or.
+    def visitOr(self, ctx:StreamParser.OrContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by StreamParser#AtomicExpression.
     def visitAtomicExpression(self, ctx:StreamParser.AtomicExpressionContext):
         return self.visitChildren(ctx)
@@ -31,11 +36,6 @@ class StreamVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by StreamParser#And.
     def visitAnd(self, ctx:StreamParser.AndContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by StreamParser#Or.
-    def visitOr(self, ctx:StreamParser.OrContext):
         return self.visitChildren(ctx)
 
 
@@ -99,11 +99,6 @@ class StreamVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by StreamParser#Grouping1.
-    def visitGrouping1(self, ctx:StreamParser.Grouping1Context):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by StreamParser#Since.
     def visitSince(self, ctx:StreamParser.SinceContext):
         return self.visitChildren(ctx)
@@ -154,11 +149,6 @@ class StreamVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by StreamParser#Grouping2.
-    def visitGrouping2(self, ctx:StreamParser.Grouping2Context):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by StreamParser#Atomic.
     def visitAtomic(self, ctx:StreamParser.AtomicContext):
         return self.visitChildren(ctx)
@@ -204,8 +194,8 @@ class StreamVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by StreamParser#Grouping3.
-    def visitGrouping3(self, ctx:StreamParser.Grouping3Context):
+    # Visit a parse tree produced by StreamParser#Grouping.
+    def visitGrouping(self, ctx:StreamParser.GroupingContext):
         return self.visitChildren(ctx)
 
 

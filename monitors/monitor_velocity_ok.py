@@ -8,13 +8,13 @@ from std_msgs.msg import *
 
 def callback(data):
 	pub.publish(data)
-	print('a = ' + str(data.value))
+	print('velocity_ok = ' + str(data.value))
 
 def main(argv):
 	global pub
-	rospy.init_node('monitor_a', anonymous=True)
-	rospy.Subscriber('and_monitor_2', TimedBool, callback)
-	pub = rospy.Publisher(name = 'a', data_class = TimedBool, latch = True, queue_size = 1000)
+	rospy.init_node('monitor_velocity_ok', anonymous=True)
+	rospy.Subscriber('and_monitor_30', TimedBool, callback)
+	pub = rospy.Publisher(name = 'velocity_ok', data_class = TimedBool, latch = True, queue_size = 1000)
 	rospy.spin()
 if __name__ == '__main__':
 	main(sys.argv)

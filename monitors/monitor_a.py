@@ -24,10 +24,10 @@ def callbackClock(data):
 
 def main(argv):
 	global pub
-	rospy.init_node('monitor_front_wheel_r_vel', anonymous=True)
-	rospy.Subscriber('front_wheel_r_vel', Float64, callback)
+	rospy.init_node('monitor_a', anonymous=True)
+	rospy.Subscriber('a', Float64, callback)
 	rospy.Subscriber('stream_clock', Int64, callbackClock)
-	pub = rospy.Publisher(name = 'front_wheel_r_vel_', data_class = TimedReal, latch = True, queue_size = 1000)
+	pub = rospy.Publisher(name = 'a_', data_class = TimedReal, latch = True, queue_size = 1000)
 	rospy.spin()
 if __name__ == '__main__':
 	main(sys.argv)

@@ -8,21 +8,20 @@ from std_msgs.msg import *
 
 ws_lock = Lock()
 
-def callbacktmax_monitor_14(data):
+def callbacktwo_stream_diff_monitor_0(data):
 	ws_lock.acquire()
 	msg = TimedBool()
 	msg.time = data.time
-	msg.value = data.value  <=  10
-	print(str(data.value) + '  <=  ' + str(10) + '=' + str(msg.value))
+	msg.value = data.value  >  0
 	pub.publish(msg)
 	ws_lock.release()
 
 
 def main(argv):
 	global pub, monitor
-	rospy.init_node('less_eq_monitor_15', anonymous=True)
-	pub = rospy.Publisher(name = 'less_eq_monitor_15', data_class = TimedBool, latch = True, queue_size = 1000)
-	rospy.Subscriber('tmax_monitor_14', TimedReal, callbacktmax_monitor_14)
+	rospy.init_node('greater_monitor_1', anonymous=True)
+	pub = rospy.Publisher(name = 'greater_monitor_1', data_class = TimedBool, latch = True, queue_size = 1000)
+	rospy.Subscriber('two_stream_diff_monitor_0', TimedReal, callbacktwo_stream_diff_monitor_0)
 	rospy.spin()
 
 if __name__ == '__main__':

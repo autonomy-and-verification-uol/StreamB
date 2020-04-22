@@ -39,6 +39,7 @@ evalExpr : child=aggregationExpr                                       # Aggrega
      | left=aggregationExpr ('>=') right=aggregationExpr               # GreaterEq
      | left=aggregationExpr ('==') right=aggregationExpr               # Eq
      | left=aggregationExpr ('!=') right=aggregationExpr               # Neq
+     | ('diff') first=aggregationExpr second=aggregationExpr           # TwoStreamDiff
      ;
 aggregationExpr : child=atom                                           # Atomic
      | child=NUMBER                                                    # Int
@@ -49,6 +50,11 @@ aggregationExpr : child=atom                                           # Atomic
      | ('max') '[' l=NUMBER ']' child=aggregationExpr                  # TimedMax
      | ('avg') child=aggregationExpr                                   # Avg
      | ('avg') '[' l=NUMBER ']' child=aggregationExpr                  # TimedAvg
+     | ('diff') '[' l=NUMBER ']' child=aggregationExpr                 # TimedDiff
+     | ('delta') child=aggregationExpr                                 # Delta
+     | ('delta') '[' l=NUMBER ']' child=aggregationExpr                # TimedDelta
+     | ('count') child=aggregationExpr                                 # Count
+     | ('count') '[' l=NUMBER ']' child=aggregationExpr                # TimedCount
      | '(' child=expr ')'                                              # Grouping
     ;
 
@@ -62,9 +68,9 @@ IDENTIFIER : [_a-zA-Z][_a-zA-Z0-9]*;
 
 types : v='int' | v='real' | v='bool';
 
-NUMBER: DIGIT | (DIGIT_NOT_ZERO DIGIT+);
+NUMBER : ('-')? DIGIT | ('-')? (DIGIT_NOT_ZERO DIGIT+);
 
-REAL: NUMBER '.' (DIGIT+);
+REAL : NUMBER '.' (DIGIT+) | NUMBER '.' (DIGIT+);
 
 WS         : [ \r\n\t]+ -> channel (HIDDEN);
 

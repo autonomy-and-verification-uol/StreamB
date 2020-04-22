@@ -149,6 +149,11 @@ class StreamVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by StreamParser#TwoStreamDiff.
+    def visitTwoStreamDiff(self, ctx:StreamParser.TwoStreamDiffContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by StreamParser#Atomic.
     def visitAtomic(self, ctx:StreamParser.AtomicContext):
         return self.visitChildren(ctx)
@@ -191,6 +196,31 @@ class StreamVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by StreamParser#TimedAvg.
     def visitTimedAvg(self, ctx:StreamParser.TimedAvgContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by StreamParser#TimedDiff.
+    def visitTimedDiff(self, ctx:StreamParser.TimedDiffContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by StreamParser#Delta.
+    def visitDelta(self, ctx:StreamParser.DeltaContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by StreamParser#TimedDelta.
+    def visitTimedDelta(self, ctx:StreamParser.TimedDeltaContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by StreamParser#Count.
+    def visitCount(self, ctx:StreamParser.CountContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by StreamParser#TimedCount.
+    def visitTimedCount(self, ctx:StreamParser.TimedCountContext):
         return self.visitChildren(ctx)
 
 

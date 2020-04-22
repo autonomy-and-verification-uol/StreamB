@@ -17,7 +17,7 @@ class StreamBuilder(StreamVisitor):
         self.precision = 1.0
         self.rate = 10
         self.threshold = 2
-        self.debug = True
+        self.debug = False
         self.already_seen = {}
 
     def reset(self):
@@ -40,9 +40,9 @@ class StreamBuilder(StreamVisitor):
 
     # convert type from Grammar to type in ROS
     def convert(type):
-        if type == 'int':
+        if type == 'TimedInt':
             ty = 'Int64'
-        elif type == 'real':
+        elif type == 'TimedReal':
             ty = 'Float64'
         else:
             ty = 'Bool'
@@ -155,11 +155,11 @@ class StreamBuilder(StreamVisitor):
         statements += ['def main(argv):']
         statements += ['\tglobal pub, monitor']
         statements += ['\trospy.init_node(\'{monitorName}\', anonymous=True)'.format(monitorName=monitorName)]
-        statements += ['\tpub = rospy.Publisher(name = \'{topic}\', data_class = TimedBool, latch = True, queue_size = 1000)'.format(topic=monitorName)]
+        statements += ['\tpub = rospy.Publisher(name = \'{topic}\', data_class = {ty}, latch = True, queue_size = 1000)'.format(topic=monitorName, ty=self.type)]
         if labelL.startswith('kwargs'):
-            statements += ['\trospy.Subscriber(\'{topic}\', {ty}, callback{topic})'.format(topic=labelL[8:-2], ty=StreamBuilder.convertToTimed(typeL))]
+            statements += ['\trospy.Subscriber(\'{topic}\', {ty}, callback{topic})'.format(topic=labelL[8:-2], ty=typeL)]
         if labelR.startswith('kwargs'):
-            statements += ['\trospy.Subscriber(\'{topic}\', {ty}, callback{topic})'.format(topic=labelR[8:-2], ty=StreamBuilder.convertToTimed(typeR))]
+            statements += ['\trospy.Subscriber(\'{topic}\', {ty}, callback{topic})'.format(topic=labelR[8:-2], ty=typeR)]
         statements += ['\trospy.spin()']
         statements += ['']
         statements += ['if __name__ == \'__main__\':']
@@ -181,6 +181,7 @@ class StreamBuilder(StreamVisitor):
         statements += ['from stream.msg import *']
         statements += ['from std_msgs.msg import *']
         statements += ['from queue import *']
+        statements += ['import math']
         statements += ['']
         statements += ['ws_lock = Lock()']
         statements += ['']
@@ -190,7 +191,7 @@ class StreamBuilder(StreamVisitor):
         # we add the callback to listen to the results obtained by the lower level monitor
         statements += ['def callback{topic}(data):'.format(topic=child[8:-2])]
         statements += ['\tws_lock.acquire()']
-        statements += ['\tmsg = {type}()'.format(type=StreamBuilder.convertToTimed(type))]
+        statements += ['\tmsg = {type}()'.format(type=type)]
         statements += ['\tmsg.time = data.time']
         statements += ['\tmsg.value = aggregate(data.time, data.value)'] # aggreagte the result accordingly
         statements += ['\tpub.publish(msg)']
@@ -200,8 +201,8 @@ class StreamBuilder(StreamVisitor):
         statements += ['def main(argv):']
         statements += ['\tglobal pub, monitor']
         statements += ['\trospy.init_node(\'{monitorName}\', anonymous=True)'.format(monitorName=monitorName)]
-        statements += ['\tpub = rospy.Publisher(name = \'{topic}\', data_class = {type}, latch = True, queue_size = 1000)'.format(topic=monitorName, type=StreamBuilder.convertToTimed(type))]
-        statements += ['\trospy.Subscriber(\'{topic}\', {ty}, callback{topic})'.format(topic=child[8:-2], ty=StreamBuilder.convertToTimed(type))]
+        statements += ['\tpub = rospy.Publisher(name = \'{topic}\', data_class = {type}, latch = True, queue_size = 1000)'.format(topic=monitorName, type=type)]
+        statements += ['\trospy.Subscriber(\'{topic}\', {ty}, callback{topic})'.format(topic=child[8:-2], ty=type)]
         statements += ['\trospy.spin()']
         statements += ['']
         statements += ['if __name__ == \'__main__\':']
@@ -377,7 +378,7 @@ class StreamBuilder(StreamVisitor):
     def visitTyExpr(self, ctx:StreamParser.TyExprContext):
         i = 0
         for type in ctx.types():
-            self.types[str(ctx.IDENTIFIER(i))] = type.v.text
+            self.types[str(ctx.IDENTIFIER(i))] = StreamBuilder.convertToTimed(type.v.text)
             i += 1
 
     # visit (name = expr)
@@ -408,8 +409,8 @@ class StreamBuilder(StreamVisitor):
             statements += ['def main(argv):']
             statements += ['\tglobal pub']
             statements += ['\trospy.init_node(\'{monitorName}\', anonymous=True)'.format(monitorName=monitorName)]
-            statements += ['\trospy.Subscriber(\'{topic}\', {ty}, callback)'.format(topic=label[8:-2], ty=StreamBuilder.convertToTimed(self.type))]
-            statements += ['\tpub = rospy.Publisher(name = \'{topic}\', data_class = {ty}, latch = True, queue_size = 1000)'.format(topic=ctx.IDENTIFIER(i), ty=StreamBuilder.convertToTimed(self.type))]
+            statements += ['\trospy.Subscriber(\'{topic}\', {ty}, callback)'.format(topic=label[8:-2], ty=self.type)]
+            statements += ['\tpub = rospy.Publisher(name = \'{topic}\', data_class = {ty}, latch = True, queue_size = 1000)'.format(topic=ctx.IDENTIFIER(i), ty=self.type)]
             statements += ['\trospy.spin()']
             statements += ['if __name__ == \'__main__\':']
             statements += ['\tmain(sys.argv)']
@@ -489,18 +490,20 @@ class StreamBuilder(StreamVisitor):
     # propagate the visit to the lower expression
     def visitEvaluation(self, ctx:StreamParser.EvaluationContext):
         label = str(self.visit(ctx.child))
-        if label.startswith('kwargs'):
-            label = label[8:-2]
-        #self.subscribers.add(label)
-        return 'kwargs[\'{}\']'.format(label)
+        return label
+        # if label.startswith('kwargs'):
+        #     label = label[8:-2]
+        # #self.subscribers.add(label)
+        # return 'kwargs[\'{}\']'.format(label)
 
     # propagate the visit to the lower expression
     def visitAggregation(self, ctx:StreamParser.AggregationContext):
         label = str(self.visit(ctx.child))
-        if label.startswith('kwargs'):
-            label = label[8:-2]
-        #self.subscribers.add(label)
-        return 'kwargs[\'{}\']'.format(label)
+        return label
+        # if label.startswith('kwargs'):
+        #     label = label[8:-2]
+        # #self.subscribers.add(label)
+        # return 'kwargs[\'{}\']'.format(label)
 
     # visit (expr < expr)
     def visitLess(self, ctx:StreamParser.LessContext):
@@ -634,7 +637,7 @@ class StreamBuilder(StreamVisitor):
         statements += ['\tglobal lastTime, lastValue']
         statements += ['\tif lastTime is None:']
         statements += ['\t\tlastTime = time - 1']
-        statements += ['\t\tfor i in range(0, 4):']
+        statements += ['\t\tfor i in range(0, {interval}):'.format(interval=interval)]
         statements += ['\t\t\tvalues.put(value)']
         statements += ['\twhile (time - lastTime) > 1:']
         statements += ['\t\tvalues.put(lastValue)']
@@ -655,11 +658,11 @@ class StreamBuilder(StreamVisitor):
 
         aggrFunc = '\n'.join(statements)
 
-        if 'tmin' + label in self.already_seen:
-            return 'kwargs[\'' + self.already_seen['tmin' + label] + '\']'
+        if 'tmin' + interval + label in self.already_seen:
+            return 'kwargs[\'' + self.already_seen['tmin' + interval + label] + '\']'
         else:
             self.createAggregationMonitor('tmin_monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
-            self.already_seen['tmin' + label] = 'tmin_monitor_' + str(self.nMonitors)
+            self.already_seen['tmin' + interval + label] = 'tmin_monitor_' + str(self.nMonitors)
             self.nMonitors += 1
             return 'kwargs[\'tmin_monitor_' + str(self.nMonitors - 1) + '\']'
 
@@ -699,7 +702,7 @@ class StreamBuilder(StreamVisitor):
         statements += ['\tglobal lastTime, lastValue']
         statements += ['\tif lastTime is None:']
         statements += ['\t\tlastTime = time - 1']
-        statements += ['\t\tfor i in range(0, 4):']
+        statements += ['\t\tfor i in range(0, {interval}):'.format(interval=interval)]
         statements += ['\t\t\tvalues.put(value)']
         statements += ['\twhile (time - lastTime) > 1:']
         statements += ['\t\tvalues.put(lastValue)']
@@ -720,11 +723,11 @@ class StreamBuilder(StreamVisitor):
 
         aggrFunc = '\n'.join(statements)
 
-        if 'tmax' + label in self.already_seen:
-            return 'kwargs[\'' + self.already_seen['tmax' + label] + '\']'
+        if 'tmax' + interval + label in self.already_seen:
+            return 'kwargs[\'' + self.already_seen['tmax' + interval + label] + '\']'
         else:
             self.createAggregationMonitor('tmax_monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
-            self.already_seen['tmax' + label] = 'tmax_monitor_' + str(self.nMonitors)
+            self.already_seen['tmax' + interval + label] = 'tmax_monitor_' + str(self.nMonitors)
             self.nMonitors += 1
             return 'kwargs[\'tmax_monitor_' + str(self.nMonitors - 1) + '\']'
 
@@ -765,7 +768,7 @@ class StreamBuilder(StreamVisitor):
         statements += ['\tglobal lastTime, lastValue']
         statements += ['\tif lastTime is None:']
         statements += ['\t\tlastTime = time - 1']
-        statements += ['\t\tfor i in range(0, 4):']
+        statements += ['\t\tfor i in range(0, {interval}):'.format(interval=interval)]
         statements += ['\t\t\tvalues.put(value)']
         statements += ['\twhile (time - lastTime) > 1:']
         statements += ['\t\tvalues.put(lastValue)']
@@ -774,25 +777,215 @@ class StreamBuilder(StreamVisitor):
         statements += ['\twhile values.qsize() > {interval}:'.format(interval=interval)]
         statements += ['\t\tvalues.get()']
         statements += ['\tavg = 0']
-        statements += ['\tcount = 0']
         statements += ['\tfor i in range({interval}):'.format(interval)]
         statements += ['\t\tv = values.get()']
         statements += ['\t\tvalues.put(v)']
-        statements += ['\t\tavg = avg + (v - avg) / count']
-        statements += ['\t\tcount += 1']
+        statements += ['\t\tavg = avg + (v - avg) / (i + 1)']
         statements += ['\tlastValue = value']
         statements += ['\tlastTime += 1']
         statements += ['\treturn avg']
 
         aggrFunc = '\n'.join(statements)
 
-        if 'tavg' + label in self.already_seen:
-            return 'kwargs[\'' + self.already_seen['tavg' + label] + '\']'
+        if 'tavg' + interval + label in self.already_seen:
+            return 'kwargs[\'' + self.already_seen['tavg' + interval + label] + '\']'
         else:
             self.createAggregationMonitor('tavg_monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
-            self.already_seen['tavg' + label] = 'tavg_monitor_' + str(self.nMonitors)
+            self.already_seen['tavg' + interval + label] = 'tavg_monitor_' + str(self.nMonitors)
             self.nMonitors += 1
             return 'kwargs[\'tavg_monitor_' + str(self.nMonitors - 1) + '\']'
+
+    # visit (diff expr)
+    def visitTimedDiff(self, ctx:StreamParser.TimedDiffContext):
+        label = self.visit(ctx.child)
+        interval = ctx.l.text
+        # create the aggregation function to pass to the aggregation monitor creator
+        statements = []
+        statements += ['from queue import *']
+        statements += ['values = Queue()']
+        statements += ['lastTime = None']
+        statements += ['lastValue = None']
+        statements += ['def aggregate(time, value):']
+        statements += ['\tglobal lastTime, lastValue']
+        statements += ['\tif lastTime is None:']
+        statements += ['\t\tlastTime = time - 1']
+        statements += ['\t\tfor i in range(0, {interval}):'.format(interval=interval)]
+        statements += ['\t\t\tvalues.put(value)']
+        statements += ['\twhile (time - lastTime) > 1:']
+        statements += ['\t\tvalues.put(lastValue)']
+        statements += ['\t\tlastTime += 1']
+        statements += ['\tvalues.put(value)']
+        statements += ['\twhile values.qsize() > {interval}:'.format(interval=interval)]
+        statements += ['\t\tlastRemoved = values.get()']
+        statements += ['\tlastValue = value']
+        statements += ['\tlastTime += 1']
+        statements += ['\treturn value - lastRemoved']
+
+
+        aggrFunc = '\n'.join(statements)
+
+        if 'tdiff' + interval + label in self.already_seen:
+            return 'kwargs[\'' + self.already_seen['tdiff' + interval + label] + '\']'
+        else:
+            self.createAggregationMonitor('tdiff_monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
+            self.already_seen['tdiff' + interval + label] = 'tdiff_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'tdiff_monitor_' + str(self.nMonitors - 1) + '\']'
+
+    # visit (diff expr1 expr2)
+    def visitTwoStreamDiff(self, ctx:StreamParser.TwoStreamDiffContext):
+        labelF = self.visit(ctx.first)
+        typeF = self.type
+        labelS = self.visit(ctx.second)
+        typeS = self.type
+        operator = ' - '
+        if typeF == 'TimedReal' or typeS == 'TimedReal':
+            self.type = 'TimedReal'
+        else:
+            self.type = 'TimedInt'
+        if labelF + operator + labelS in self.already_seen:
+            return 'kwargs[\'' + self.already_seen[labelF + operator + labelS] + '\']'
+        else:
+            self.createCompositionMonitor('two_stream_diff_monitor_' + str(self.nMonitors), labelF, labelS, typeF, typeS, operator)
+            self.already_seen[labelF + operator + labelS] = 'two_stream_diff_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'two_stream_diff_monitor_' + str(self.nMonitors - 1) + '\']'
+
+    # visit (delta expr)
+    def visitDelta(self, ctx:StreamParser.DeltaContext):
+        label = self.visit(ctx.child)
+        # create the aggregation function to pass to the aggregation monitor creator
+        statements = []
+        statements += ['avg = 0']
+        statements += ['delta = 0']
+        statements += ['count = 0']
+        statements += ['def aggregate(time, lastValue):']
+        statements += ['\tglobal avg, delta, count']
+        statements += ['\tcount += 1']
+        statements += ['\tavgOld = avg']
+        statements += ['\tavg = avg + (lastValue - avg) / count']
+        statements += ['\tdelta = delta + (lastValue - avgOld) * (lastValue - avg)']
+        statements += ['\treturn math.sqrt(delta / count)']
+
+        aggrFunc = '\n'.join(statements)
+
+        if 'delta' + label in self.already_seen:
+            return 'kwargs[\'' + self.already_seen['delta' + label] + '\']'
+        else:
+            self.createAggregationMonitor('delta_monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
+            self.already_seen['delta' + label] = 'delta_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'delta_monitor_' + str(self.nMonitors - 1) + '\']'
+
+    # visit (delta [l] expr)
+    def visitTimedDelta(self, ctx:StreamParser.TimedDeltaContext):
+        label = self.visit(ctx.child)
+        interval = ctx.l.text
+        # create the aggregation function to pass to the aggregation monitor creator
+        statements = []
+        statements += ['from queue import *']
+        statements += ['values = Queue()']
+        statements += ['lastTime = None']
+        statements += ['lastValue = None']
+        statements += ['def aggregate(time, value):']
+        statements += ['\tglobal lastTime, lastValue']
+        statements += ['\tif lastTime is None:']
+        statements += ['\t\tlastTime = time - 1']
+        statements += ['\t\tfor i in range(0, {interval}):'.format(interval=interval)]
+        statements += ['\t\t\tvalues.put(value)']
+        statements += ['\twhile (time - lastTime) > 1:']
+        statements += ['\t\tvalues.put(lastValue)']
+        statements += ['\t\tlastTime += 1']
+        statements += ['\tvalues.put(value)']
+        statements += ['\twhile values.qsize() > {interval}:'.format(interval=interval)]
+        statements += ['\t\tvalues.get()']
+        statements += ['\tavg = 0']
+        statements += ['\tfor i in range({interval}):'.format(interval=interval)]
+        statements += ['\t\tv = values.get()']
+        statements += ['\t\tvalues.put(v)']
+        statements += ['\t\tavg = avg + (v - avg) / (i + 1)']
+        statements += ['\tsum = 0']
+        statements += ['\tfor i in range({interval}):'.format(interval=interval)]
+        statements += ['\t\tv = values.get()']
+        statements += ['\t\tvalues.put(v)']
+        statements += ['\t\tsum += (v - avg) ** 2']
+        statements += ['\tlastValue = value']
+        statements += ['\tlastTime += 1']
+        statements += ['\treturn math.sqrt(sum / {interval})'.format(interval=interval)]
+
+        aggrFunc = '\n'.join(statements)
+
+        if 'tdelta' + interval + label in self.already_seen:
+            return 'kwargs[\'' + self.already_seen['tdelta' + interval + label] + '\']'
+        else:
+            self.createAggregationMonitor('tdelta_monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
+            self.already_seen['tdelta' + interval + label] = 'tdelta_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'tdelta_monitor_' + str(self.nMonitors - 1) + '\']'
+
+    # visit (count expr)
+    def visitCount(self, ctx:StreamParser.CountContext):
+        label = self.visit(ctx.child)
+        # create the aggregation function to pass to the aggregation monitor creator
+        statements = []
+        statements += ['count = 0']
+        statements += ['def aggregate(time, lastValue):']
+        statements += ['\tglobal count']
+        statements += ['\tif lastValue:']
+        statements += ['\t\tcount = count + 1']
+        statements += ['\treturn count']
+
+        aggrFunc = '\n'.join(statements)
+
+        if 'count' + label in self.already_seen:
+            return 'kwargs[\'' + self.already_seen['count' + label] + '\']'
+        else:
+            self.createAggregationMonitor('count_monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
+            self.already_seen['count' + label] = 'count_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'count_monitor_' + str(self.nMonitors - 1) + '\']'
+
+    # visit (count [l] expr)
+    def visitTimedCount(self, ctx:StreamParser.TimedCountContext):
+        label = self.visit(ctx.child)
+        interval = ctx.l.text
+        # create the aggregation function to pass to the aggregation monitor creator
+        statements = []
+        statements += ['from queue import *']
+        statements += ['values = Queue()']
+        statements += ['lastTime = None']
+        statements += ['lastValue = None']
+        statements += ['def aggregate(time, value):']
+        statements += ['\tglobal lastTime, lastValue']
+        statements += ['\tif lastTime is None:']
+        statements += ['\t\tlastTime = time - 1']
+        statements += ['\t\tfor i in range(0, {interval}):'.format(interval=interval)]
+        statements += ['\t\t\tvalues.put(value)']
+        statements += ['\twhile (time - lastTime) > 1:']
+        statements += ['\t\tvalues.put(lastValue)']
+        statements += ['\t\tlastTime += 1']
+        statements += ['\tvalues.put(value)']
+        statements += ['\twhile values.qsize() > {interval}:'.format(interval=interval)]
+        statements += ['\t\tvalues.get()']
+        statements += ['\tcount = 0']
+        statements += ['\tfor i in range({interval}):'.format(interval=interval)]
+        statements += ['\t\tv = values.get()']
+        statements += ['\t\tvalues.put(v)']
+        statements += ['\t\tif v:']
+        statements += ['\t\t\tcount = count + 1']
+        statements += ['\tlastValue = value']
+        statements += ['\tlastTime += 1']
+        statements += ['\treturn count']
+
+        aggrFunc = '\n'.join(statements)
+
+        if 'tcount' + interval + label in self.already_seen:
+            return 'kwargs[\'' + self.already_seen['tcount' + interval + label] + '\']'
+        else:
+            self.createAggregationMonitor('tcount_monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
+            self.already_seen['tcount' + interval + label] = 'tcount_monitor_' + str(self.nMonitors)
+            self.nMonitors += 1
+            return 'kwargs[\'tcount_monitor_' + str(self.nMonitors - 1) + '\']'
 
     # visit atomic proposition
     def visitProp(self, ctx:StreamParser.PropContext):
@@ -827,7 +1020,7 @@ class StreamBuilder(StreamVisitor):
             statements += ['def callbackClock(data):']
             statements += ['\tws_lock.acquire()']
             statements += ['\tif last is not None: ']
-            statements += ['\t\tmsg = {ty}()'.format(ty=StreamBuilder.convertToTimed(self.type))]
+            statements += ['\t\tmsg = {ty}()'.format(ty=self.type)]
             statements += ['\t\tmsg.time = data.data']
             statements += ['\t\tmsg.value = last']
             statements += ['\t\tpub.publish(msg)'] # republish last observed data
@@ -840,7 +1033,7 @@ class StreamBuilder(StreamVisitor):
             statements += ['\trospy.Subscriber(\'{topic}\', {ty}, callback)'.format(topic=name, ty=StreamBuilder.convert(self.type))]
             statements += ['\trospy.Subscriber(\'stream_clock\', Int64, callbackClock)']
             # publish on an updated topic (adding '_' to the topic name)
-            statements += ['\tpub = rospy.Publisher(name = \'{topic}\', data_class = {ty}, latch = True, queue_size = 1000)'.format(topic=name+'_', ty=StreamBuilder.convertToTimed(self.type))]
+            statements += ['\tpub = rospy.Publisher(name = \'{topic}\', data_class = {ty}, latch = True, queue_size = 1000)'.format(topic=name+'_', ty=self.type)]
             statements += ['\trospy.spin()']
             statements += ['if __name__ == \'__main__\':']
             statements += ['\tmain(sys.argv)']

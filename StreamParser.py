@@ -11,8 +11,8 @@ else:
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\'")
-        buf.write("\u00d2\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3*")
+        buf.write("\u00e9\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
         buf.write("\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\3\2\3\2\3\2\3\3\3\3")
         buf.write("\3\3\3\3\3\3\7\3\37\n\3\f\3\16\3\"\13\3\3\4\3\4\3\4\3")
         buf.write("\4\3\4\6\4)\n\4\r\4\16\4*\3\5\3\5\3\5\3\5\3\5\3\5\3\5")
@@ -24,79 +24,91 @@ def serializedATN():
         buf.write("\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\7\6\177\n\6\f\6")
         buf.write("\16\6\u0082\13\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3")
         buf.write("\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7")
-        buf.write("\3\7\3\7\5\7\u009d\n\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b")
+        buf.write("\3\7\3\7\3\7\3\7\3\7\3\7\5\7\u00a1\n\7\3\b\3\b\3\b\3\b")
         buf.write("\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3")
-        buf.write("\b\3\b\3\b\3\b\3\b\3\b\3\b\5\b\u00bb\n\b\3\t\3\t\3\t\3")
-        buf.write("\t\3\t\3\t\5\t\u00c3\n\t\3\n\3\n\3\n\7\n\u00c8\n\n\f\n")
-        buf.write("\16\n\u00cb\13\n\3\13\3\13\3\13\5\13\u00d0\n\13\3\13\2")
-        buf.write("\4\b\n\f\2\4\6\b\n\f\16\20\22\24\2\4\3\2\b\t\3\2\f\r\2")
-        buf.write("\u00ec\2\26\3\2\2\2\4 \3\2\2\2\6(\3\2\2\2\b,\3\2\2\2\n")
-        buf.write("`\3\2\2\2\f\u009c\3\2\2\2\16\u00ba\3\2\2\2\20\u00c2\3")
-        buf.write("\2\2\2\22\u00c4\3\2\2\2\24\u00cf\3\2\2\2\26\27\5\4\3\2")
-        buf.write("\27\30\5\6\4\2\30\3\3\2\2\2\31\32\7$\2\2\32\33\7\3\2\2")
-        buf.write("\33\34\5\24\13\2\34\35\7\4\2\2\35\37\3\2\2\2\36\31\3\2")
-        buf.write("\2\2\37\"\3\2\2\2 \36\3\2\2\2 !\3\2\2\2!\5\3\2\2\2\" ")
-        buf.write("\3\2\2\2#$\7$\2\2$%\7\5\2\2%&\5\b\5\2&\'\7\4\2\2\')\3")
-        buf.write("\2\2\2(#\3\2\2\2)*\3\2\2\2*(\3\2\2\2*+\3\2\2\2+\7\3\2")
-        buf.write("\2\2,-\b\5\1\2-.\5\n\6\2.\67\3\2\2\2/\60\f\4\2\2\60\61")
-        buf.write("\7\6\2\2\61\66\5\b\5\5\62\63\f\3\2\2\63\64\7\7\2\2\64")
-        buf.write("\66\5\b\5\4\65/\3\2\2\2\65\62\3\2\2\2\669\3\2\2\2\67\65")
-        buf.write("\3\2\2\2\678\3\2\2\28\t\3\2\2\29\67\3\2\2\2:;\b\6\1\2")
-        buf.write(";a\5\f\7\2<=\t\2\2\2=a\5\n\6\20>?\7\16\2\2?a\5\n\6\f@")
-        buf.write("A\7\17\2\2Aa\5\n\6\13BC\7\17\2\2CD\7\20\2\2DE\7%\2\2E")
-        buf.write("F\7\21\2\2FG\7%\2\2GH\7\22\2\2Ha\5\n\6\nIJ\7\17\2\2JK")
-        buf.write("\7\20\2\2KL\7%\2\2LM\7\21\2\2MN\7\23\2\2NO\7\22\2\2Oa")
-        buf.write("\5\n\6\tPQ\7\24\2\2Qa\5\n\6\bRS\7\24\2\2ST\7\20\2\2TU")
-        buf.write("\7%\2\2UV\7\21\2\2VW\7%\2\2WX\7\22\2\2Xa\5\n\6\7YZ\7\24")
-        buf.write("\2\2Z[\7\20\2\2[\\\7%\2\2\\]\7\21\2\2]^\7\23\2\2^_\7\22")
-        buf.write("\2\2_a\5\n\6\6`:\3\2\2\2`<\3\2\2\2`>\3\2\2\2`@\3\2\2\2")
-        buf.write("`B\3\2\2\2`I\3\2\2\2`P\3\2\2\2`R\3\2\2\2`Y\3\2\2\2a\u0080")
-        buf.write("\3\2\2\2bc\f\17\2\2cd\7\n\2\2d\177\5\n\6\20ef\f\16\2\2")
-        buf.write("fg\7\13\2\2g\177\5\n\6\17hi\f\r\2\2ij\t\3\2\2j\177\5\n")
-        buf.write("\6\16kl\f\5\2\2lm\7\25\2\2m\177\5\n\6\6no\f\4\2\2op\7")
-        buf.write("\25\2\2pq\7\20\2\2qr\7%\2\2rs\7\21\2\2st\7%\2\2tu\7\22")
-        buf.write("\2\2u\177\5\n\6\5vw\f\3\2\2wx\7\25\2\2xy\7\20\2\2yz\7")
-        buf.write("%\2\2z{\7\21\2\2{|\7\23\2\2|}\7\22\2\2}\177\5\n\6\4~b")
-        buf.write("\3\2\2\2~e\3\2\2\2~h\3\2\2\2~k\3\2\2\2~n\3\2\2\2~v\3\2")
-        buf.write("\2\2\177\u0082\3\2\2\2\u0080~\3\2\2\2\u0080\u0081\3\2")
-        buf.write("\2\2\u0081\13\3\2\2\2\u0082\u0080\3\2\2\2\u0083\u009d")
-        buf.write("\5\16\b\2\u0084\u0085\5\16\b\2\u0085\u0086\7\26\2\2\u0086")
-        buf.write("\u0087\5\16\b\2\u0087\u009d\3\2\2\2\u0088\u0089\5\16\b")
-        buf.write("\2\u0089\u008a\7\27\2\2\u008a\u008b\5\16\b\2\u008b\u009d")
-        buf.write("\3\2\2\2\u008c\u008d\5\16\b\2\u008d\u008e\7\30\2\2\u008e")
-        buf.write("\u008f\5\16\b\2\u008f\u009d\3\2\2\2\u0090\u0091\5\16\b")
-        buf.write("\2\u0091\u0092\7\31\2\2\u0092\u0093\5\16\b\2\u0093\u009d")
-        buf.write("\3\2\2\2\u0094\u0095\5\16\b\2\u0095\u0096\7\32\2\2\u0096")
-        buf.write("\u0097\5\16\b\2\u0097\u009d\3\2\2\2\u0098\u0099\5\16\b")
-        buf.write("\2\u0099\u009a\7\33\2\2\u009a\u009b\5\16\b\2\u009b\u009d")
-        buf.write("\3\2\2\2\u009c\u0083\3\2\2\2\u009c\u0084\3\2\2\2\u009c")
-        buf.write("\u0088\3\2\2\2\u009c\u008c\3\2\2\2\u009c\u0090\3\2\2\2")
-        buf.write("\u009c\u0094\3\2\2\2\u009c\u0098\3\2\2\2\u009d\r\3\2\2")
-        buf.write("\2\u009e\u00bb\5\20\t\2\u009f\u00bb\7%\2\2\u00a0\u00bb")
-        buf.write("\7&\2\2\u00a1\u00a2\7\34\2\2\u00a2\u00bb\5\16\b\2\u00a3")
-        buf.write("\u00a4\7\34\2\2\u00a4\u00a5\7\20\2\2\u00a5\u00a6\7%\2")
-        buf.write("\2\u00a6\u00a7\7\22\2\2\u00a7\u00bb\5\16\b\2\u00a8\u00a9")
-        buf.write("\7\35\2\2\u00a9\u00bb\5\16\b\2\u00aa\u00ab\7\35\2\2\u00ab")
-        buf.write("\u00ac\7\20\2\2\u00ac\u00ad\7%\2\2\u00ad\u00ae\7\22\2")
-        buf.write("\2\u00ae\u00bb\5\16\b\2\u00af\u00b0\7\36\2\2\u00b0\u00bb")
-        buf.write("\5\16\b\2\u00b1\u00b2\7\36\2\2\u00b2\u00b3\7\20\2\2\u00b3")
-        buf.write("\u00b4\7%\2\2\u00b4\u00b5\7\22\2\2\u00b5\u00bb\5\16\b")
-        buf.write("\2\u00b6\u00b7\7\37\2\2\u00b7\u00b8\5\b\5\2\u00b8\u00b9")
-        buf.write("\7 \2\2\u00b9\u00bb\3\2\2\2\u00ba\u009e\3\2\2\2\u00ba")
-        buf.write("\u009f\3\2\2\2\u00ba\u00a0\3\2\2\2\u00ba\u00a1\3\2\2\2")
-        buf.write("\u00ba\u00a3\3\2\2\2\u00ba\u00a8\3\2\2\2\u00ba\u00aa\3")
-        buf.write("\2\2\2\u00ba\u00af\3\2\2\2\u00ba\u00b1\3\2\2\2\u00ba\u00b6")
-        buf.write("\3\2\2\2\u00bb\17\3\2\2\2\u00bc\u00c3\7$\2\2\u00bd\u00be")
-        buf.write("\7$\2\2\u00be\u00bf\7\37\2\2\u00bf\u00c0\5\22\n\2\u00c0")
-        buf.write("\u00c1\7 \2\2\u00c1\u00c3\3\2\2\2\u00c2\u00bc\3\2\2\2")
-        buf.write("\u00c2\u00bd\3\2\2\2\u00c3\21\3\2\2\2\u00c4\u00c9\7$\2")
-        buf.write("\2\u00c5\u00c6\7\21\2\2\u00c6\u00c8\7$\2\2\u00c7\u00c5")
-        buf.write("\3\2\2\2\u00c8\u00cb\3\2\2\2\u00c9\u00c7\3\2\2\2\u00c9")
-        buf.write("\u00ca\3\2\2\2\u00ca\23\3\2\2\2\u00cb\u00c9\3\2\2\2\u00cc")
-        buf.write("\u00d0\7!\2\2\u00cd\u00d0\7\"\2\2\u00ce\u00d0\7#\2\2\u00cf")
-        buf.write("\u00cc\3\2\2\2\u00cf\u00cd\3\2\2\2\u00cf\u00ce\3\2\2\2")
-        buf.write("\u00d0\25\3\2\2\2\16 *\65\67`~\u0080\u009c\u00ba\u00c2")
-        buf.write("\u00c9\u00cf")
+        buf.write("\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b")
+        buf.write("\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3")
+        buf.write("\b\3\b\3\b\5\b\u00d2\n\b\3\t\3\t\3\t\3\t\3\t\3\t\5\t\u00da")
+        buf.write("\n\t\3\n\3\n\3\n\7\n\u00df\n\n\f\n\16\n\u00e2\13\n\3\13")
+        buf.write("\3\13\3\13\5\13\u00e7\n\13\3\13\2\4\b\n\f\2\4\6\b\n\f")
+        buf.write("\16\20\22\24\2\4\3\2\b\t\3\2\f\r\2\u0109\2\26\3\2\2\2")
+        buf.write("\4 \3\2\2\2\6(\3\2\2\2\b,\3\2\2\2\n`\3\2\2\2\f\u00a0\3")
+        buf.write("\2\2\2\16\u00d1\3\2\2\2\20\u00d9\3\2\2\2\22\u00db\3\2")
+        buf.write("\2\2\24\u00e6\3\2\2\2\26\27\5\4\3\2\27\30\5\6\4\2\30\3")
+        buf.write("\3\2\2\2\31\32\7\'\2\2\32\33\7\3\2\2\33\34\5\24\13\2\34")
+        buf.write("\35\7\4\2\2\35\37\3\2\2\2\36\31\3\2\2\2\37\"\3\2\2\2 ")
+        buf.write("\36\3\2\2\2 !\3\2\2\2!\5\3\2\2\2\" \3\2\2\2#$\7\'\2\2")
+        buf.write("$%\7\5\2\2%&\5\b\5\2&\'\7\4\2\2\')\3\2\2\2(#\3\2\2\2)")
+        buf.write("*\3\2\2\2*(\3\2\2\2*+\3\2\2\2+\7\3\2\2\2,-\b\5\1\2-.\5")
+        buf.write("\n\6\2.\67\3\2\2\2/\60\f\4\2\2\60\61\7\6\2\2\61\66\5\b")
+        buf.write("\5\5\62\63\f\3\2\2\63\64\7\7\2\2\64\66\5\b\5\4\65/\3\2")
+        buf.write("\2\2\65\62\3\2\2\2\669\3\2\2\2\67\65\3\2\2\2\678\3\2\2")
+        buf.write("\28\t\3\2\2\29\67\3\2\2\2:;\b\6\1\2;a\5\f\7\2<=\t\2\2")
+        buf.write("\2=a\5\n\6\20>?\7\16\2\2?a\5\n\6\f@A\7\17\2\2Aa\5\n\6")
+        buf.write("\13BC\7\17\2\2CD\7\20\2\2DE\7(\2\2EF\7\21\2\2FG\7(\2\2")
+        buf.write("GH\7\22\2\2Ha\5\n\6\nIJ\7\17\2\2JK\7\20\2\2KL\7(\2\2L")
+        buf.write("M\7\21\2\2MN\7\23\2\2NO\7\22\2\2Oa\5\n\6\tPQ\7\24\2\2")
+        buf.write("Qa\5\n\6\bRS\7\24\2\2ST\7\20\2\2TU\7(\2\2UV\7\21\2\2V")
+        buf.write("W\7(\2\2WX\7\22\2\2Xa\5\n\6\7YZ\7\24\2\2Z[\7\20\2\2[\\")
+        buf.write("\7(\2\2\\]\7\21\2\2]^\7\23\2\2^_\7\22\2\2_a\5\n\6\6`:")
+        buf.write("\3\2\2\2`<\3\2\2\2`>\3\2\2\2`@\3\2\2\2`B\3\2\2\2`I\3\2")
+        buf.write("\2\2`P\3\2\2\2`R\3\2\2\2`Y\3\2\2\2a\u0080\3\2\2\2bc\f")
+        buf.write("\17\2\2cd\7\n\2\2d\177\5\n\6\20ef\f\16\2\2fg\7\13\2\2")
+        buf.write("g\177\5\n\6\17hi\f\r\2\2ij\t\3\2\2j\177\5\n\6\16kl\f\5")
+        buf.write("\2\2lm\7\25\2\2m\177\5\n\6\6no\f\4\2\2op\7\25\2\2pq\7")
+        buf.write("\20\2\2qr\7(\2\2rs\7\21\2\2st\7(\2\2tu\7\22\2\2u\177\5")
+        buf.write("\n\6\5vw\f\3\2\2wx\7\25\2\2xy\7\20\2\2yz\7(\2\2z{\7\21")
+        buf.write("\2\2{|\7\23\2\2|}\7\22\2\2}\177\5\n\6\4~b\3\2\2\2~e\3")
+        buf.write("\2\2\2~h\3\2\2\2~k\3\2\2\2~n\3\2\2\2~v\3\2\2\2\177\u0082")
+        buf.write("\3\2\2\2\u0080~\3\2\2\2\u0080\u0081\3\2\2\2\u0081\13\3")
+        buf.write("\2\2\2\u0082\u0080\3\2\2\2\u0083\u00a1\5\16\b\2\u0084")
+        buf.write("\u0085\5\16\b\2\u0085\u0086\7\26\2\2\u0086\u0087\5\16")
+        buf.write("\b\2\u0087\u00a1\3\2\2\2\u0088\u0089\5\16\b\2\u0089\u008a")
+        buf.write("\7\27\2\2\u008a\u008b\5\16\b\2\u008b\u00a1\3\2\2\2\u008c")
+        buf.write("\u008d\5\16\b\2\u008d\u008e\7\30\2\2\u008e\u008f\5\16")
+        buf.write("\b\2\u008f\u00a1\3\2\2\2\u0090\u0091\5\16\b\2\u0091\u0092")
+        buf.write("\7\31\2\2\u0092\u0093\5\16\b\2\u0093\u00a1\3\2\2\2\u0094")
+        buf.write("\u0095\5\16\b\2\u0095\u0096\7\32\2\2\u0096\u0097\5\16")
+        buf.write("\b\2\u0097\u00a1\3\2\2\2\u0098\u0099\5\16\b\2\u0099\u009a")
+        buf.write("\7\33\2\2\u009a\u009b\5\16\b\2\u009b\u00a1\3\2\2\2\u009c")
+        buf.write("\u009d\7\34\2\2\u009d\u009e\5\16\b\2\u009e\u009f\5\16")
+        buf.write("\b\2\u009f\u00a1\3\2\2\2\u00a0\u0083\3\2\2\2\u00a0\u0084")
+        buf.write("\3\2\2\2\u00a0\u0088\3\2\2\2\u00a0\u008c\3\2\2\2\u00a0")
+        buf.write("\u0090\3\2\2\2\u00a0\u0094\3\2\2\2\u00a0\u0098\3\2\2\2")
+        buf.write("\u00a0\u009c\3\2\2\2\u00a1\r\3\2\2\2\u00a2\u00d2\5\20")
+        buf.write("\t\2\u00a3\u00d2\7(\2\2\u00a4\u00d2\7)\2\2\u00a5\u00a6")
+        buf.write("\7\35\2\2\u00a6\u00d2\5\16\b\2\u00a7\u00a8\7\35\2\2\u00a8")
+        buf.write("\u00a9\7\20\2\2\u00a9\u00aa\7(\2\2\u00aa\u00ab\7\22\2")
+        buf.write("\2\u00ab\u00d2\5\16\b\2\u00ac\u00ad\7\36\2\2\u00ad\u00d2")
+        buf.write("\5\16\b\2\u00ae\u00af\7\36\2\2\u00af\u00b0\7\20\2\2\u00b0")
+        buf.write("\u00b1\7(\2\2\u00b1\u00b2\7\22\2\2\u00b2\u00d2\5\16\b")
+        buf.write("\2\u00b3\u00b4\7\37\2\2\u00b4\u00d2\5\16\b\2\u00b5\u00b6")
+        buf.write("\7\37\2\2\u00b6\u00b7\7\20\2\2\u00b7\u00b8\7(\2\2\u00b8")
+        buf.write("\u00b9\7\22\2\2\u00b9\u00d2\5\16\b\2\u00ba\u00bb\7\34")
+        buf.write("\2\2\u00bb\u00bc\7\20\2\2\u00bc\u00bd\7(\2\2\u00bd\u00be")
+        buf.write("\7\22\2\2\u00be\u00d2\5\16\b\2\u00bf\u00c0\7 \2\2\u00c0")
+        buf.write("\u00d2\5\16\b\2\u00c1\u00c2\7 \2\2\u00c2\u00c3\7\20\2")
+        buf.write("\2\u00c3\u00c4\7(\2\2\u00c4\u00c5\7\22\2\2\u00c5\u00d2")
+        buf.write("\5\16\b\2\u00c6\u00c7\7!\2\2\u00c7\u00d2\5\16\b\2\u00c8")
+        buf.write("\u00c9\7!\2\2\u00c9\u00ca\7\20\2\2\u00ca\u00cb\7(\2\2")
+        buf.write("\u00cb\u00cc\7\22\2\2\u00cc\u00d2\5\16\b\2\u00cd\u00ce")
+        buf.write("\7\"\2\2\u00ce\u00cf\5\b\5\2\u00cf\u00d0\7#\2\2\u00d0")
+        buf.write("\u00d2\3\2\2\2\u00d1\u00a2\3\2\2\2\u00d1\u00a3\3\2\2\2")
+        buf.write("\u00d1\u00a4\3\2\2\2\u00d1\u00a5\3\2\2\2\u00d1\u00a7\3")
+        buf.write("\2\2\2\u00d1\u00ac\3\2\2\2\u00d1\u00ae\3\2\2\2\u00d1\u00b3")
+        buf.write("\3\2\2\2\u00d1\u00b5\3\2\2\2\u00d1\u00ba\3\2\2\2\u00d1")
+        buf.write("\u00bf\3\2\2\2\u00d1\u00c1\3\2\2\2\u00d1\u00c6\3\2\2\2")
+        buf.write("\u00d1\u00c8\3\2\2\2\u00d1\u00cd\3\2\2\2\u00d2\17\3\2")
+        buf.write("\2\2\u00d3\u00da\7\'\2\2\u00d4\u00d5\7\'\2\2\u00d5\u00d6")
+        buf.write("\7\"\2\2\u00d6\u00d7\5\22\n\2\u00d7\u00d8\7#\2\2\u00d8")
+        buf.write("\u00da\3\2\2\2\u00d9\u00d3\3\2\2\2\u00d9\u00d4\3\2\2\2")
+        buf.write("\u00da\21\3\2\2\2\u00db\u00e0\7\'\2\2\u00dc\u00dd\7\21")
+        buf.write("\2\2\u00dd\u00df\7\'\2\2\u00de\u00dc\3\2\2\2\u00df\u00e2")
+        buf.write("\3\2\2\2\u00e0\u00de\3\2\2\2\u00e0\u00e1\3\2\2\2\u00e1")
+        buf.write("\23\3\2\2\2\u00e2\u00e0\3\2\2\2\u00e3\u00e7\7$\2\2\u00e4")
+        buf.write("\u00e7\7%\2\2\u00e5\u00e7\7&\2\2\u00e6\u00e3\3\2\2\2\u00e6")
+        buf.write("\u00e4\3\2\2\2\u00e6\u00e5\3\2\2\2\u00e7\25\3\2\2\2\16")
+        buf.write(" *\65\67`~\u0080\u00a0\u00d1\u00d9\u00e0\u00e6")
         return buf.getvalue()
 
 
@@ -114,8 +126,8 @@ class StreamParser ( Parser ):
                      "'!'", "'not'", "'&&'", "'||'", "'->'", "'implies'", 
                      "'pre'", "'once'", "'['", "','", "']'", "'inf'", "'always'", 
                      "'since'", "'<'", "'<='", "'>'", "'>='", "'=='", "'!='", 
-                     "'min'", "'max'", "'avg'", "'('", "')'", "'int'", "'real'", 
-                     "'bool'" ]
+                     "'diff'", "'min'", "'max'", "'avg'", "'delta'", "'count'", 
+                     "'('", "')'", "'int'", "'real'", "'bool'" ]
 
     symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
@@ -125,8 +137,8 @@ class StreamParser ( Parser ):
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "IDENTIFIER", "NUMBER", 
-                      "REAL", "WS" ]
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "IDENTIFIER", "NUMBER", "REAL", "WS" ]
 
     RULE_propertyExpr = 0
     RULE_tyExpr = 1
@@ -176,10 +188,13 @@ class StreamParser ( Parser ):
     T__30=31
     T__31=32
     T__32=33
-    IDENTIFIER=34
-    NUMBER=35
-    REAL=36
-    WS=37
+    T__33=34
+    T__34=35
+    T__35=36
+    IDENTIFIER=37
+    NUMBER=38
+    REAL=39
+    WS=40
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -1311,13 +1326,35 @@ class StreamParser ( Parser ):
                 return visitor.visitChildren(self)
 
 
+    class TwoStreamDiffContext(EvalExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.EvalExprContext
+            super().__init__(parser)
+            self.first = None # AggregationExprContext
+            self.second = None # AggregationExprContext
+            self.copyFrom(ctx)
+
+        def aggregationExpr(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(StreamParser.AggregationExprContext)
+            else:
+                return self.getTypedRuleContext(StreamParser.AggregationExprContext,i)
+
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitTwoStreamDiff" ):
+                return visitor.visitTwoStreamDiff(self)
+            else:
+                return visitor.visitChildren(self)
+
+
 
     def evalExpr(self):
 
         localctx = StreamParser.EvalExprContext(self, self._ctx, self.state)
         self.enterRule(localctx, 10, self.RULE_evalExpr)
         try:
-            self.state = 154
+            self.state = 158
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,7,self._ctx)
             if la_ == 1:
@@ -1399,6 +1436,17 @@ class StreamParser ( Parser ):
                 localctx.right = self.aggregationExpr()
                 pass
 
+            elif la_ == 8:
+                localctx = StreamParser.TwoStreamDiffContext(self, localctx)
+                self.enterOuterAlt(localctx, 8)
+                self.state = 154
+                self.match(StreamParser.T__25)
+                self.state = 155
+                localctx.first = self.aggregationExpr()
+                self.state = 156
+                localctx.second = self.aggregationExpr()
+                pass
+
 
         except RecognitionException as re:
             localctx.exception = re
@@ -1446,6 +1494,137 @@ class StreamParser ( Parser ):
                 return visitor.visitChildren(self)
 
 
+    class MaxContext(AggregationExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.AggregationExprContext
+            super().__init__(parser)
+            self.child = None # AggregationExprContext
+            self.copyFrom(ctx)
+
+        def aggregationExpr(self):
+            return self.getTypedRuleContext(StreamParser.AggregationExprContext,0)
+
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitMax" ):
+                return visitor.visitMax(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class AtomicContext(AggregationExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.AggregationExprContext
+            super().__init__(parser)
+            self.child = None # AtomContext
+            self.copyFrom(ctx)
+
+        def atom(self):
+            return self.getTypedRuleContext(StreamParser.AtomContext,0)
+
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAtomic" ):
+                return visitor.visitAtomic(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class GroupingContext(AggregationExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.AggregationExprContext
+            super().__init__(parser)
+            self.child = None # ExprContext
+            self.copyFrom(ctx)
+
+        def expr(self):
+            return self.getTypedRuleContext(StreamParser.ExprContext,0)
+
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitGrouping" ):
+                return visitor.visitGrouping(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class CountContext(AggregationExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.AggregationExprContext
+            super().__init__(parser)
+            self.child = None # AggregationExprContext
+            self.copyFrom(ctx)
+
+        def aggregationExpr(self):
+            return self.getTypedRuleContext(StreamParser.AggregationExprContext,0)
+
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitCount" ):
+                return visitor.visitCount(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class IntContext(AggregationExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.AggregationExprContext
+            super().__init__(parser)
+            self.child = None # Token
+            self.copyFrom(ctx)
+
+        def NUMBER(self):
+            return self.getToken(StreamParser.NUMBER, 0)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitInt" ):
+                return visitor.visitInt(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class TimedDiffContext(AggregationExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.AggregationExprContext
+            super().__init__(parser)
+            self.l = None # Token
+            self.child = None # AggregationExprContext
+            self.copyFrom(ctx)
+
+        def NUMBER(self):
+            return self.getToken(StreamParser.NUMBER, 0)
+        def aggregationExpr(self):
+            return self.getTypedRuleContext(StreamParser.AggregationExprContext,0)
+
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitTimedDiff" ):
+                return visitor.visitTimedDiff(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class TimedCountContext(AggregationExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.AggregationExprContext
+            super().__init__(parser)
+            self.l = None # Token
+            self.child = None # AggregationExprContext
+            self.copyFrom(ctx)
+
+        def NUMBER(self):
+            return self.getToken(StreamParser.NUMBER, 0)
+        def aggregationExpr(self):
+            return self.getTypedRuleContext(StreamParser.AggregationExprContext,0)
+
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitTimedCount" ):
+                return visitor.visitTimedCount(self)
+            else:
+                return visitor.visitChildren(self)
+
+
     class MinContext(AggregationExprContext):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.AggregationExprContext
@@ -1478,6 +1657,27 @@ class StreamParser ( Parser ):
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitAvg" ):
                 return visitor.visitAvg(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class TimedDeltaContext(AggregationExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.AggregationExprContext
+            super().__init__(parser)
+            self.l = None # Token
+            self.child = None # AggregationExprContext
+            self.copyFrom(ctx)
+
+        def NUMBER(self):
+            return self.getToken(StreamParser.NUMBER, 0)
+        def aggregationExpr(self):
+            return self.getTypedRuleContext(StreamParser.AggregationExprContext,0)
+
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitTimedDelta" ):
+                return visitor.visitTimedDelta(self)
             else:
                 return visitor.visitChildren(self)
 
@@ -1524,7 +1724,7 @@ class StreamParser ( Parser ):
                 return visitor.visitChildren(self)
 
 
-    class MaxContext(AggregationExprContext):
+    class DeltaContext(AggregationExprContext):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.AggregationExprContext
             super().__init__(parser)
@@ -1536,8 +1736,8 @@ class StreamParser ( Parser ):
 
 
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitMax" ):
-                return visitor.visitMax(self)
+            if hasattr( visitor, "visitDelta" ):
+                return visitor.visitDelta(self)
             else:
                 return visitor.visitChildren(self)
 
@@ -1559,170 +1759,180 @@ class StreamParser ( Parser ):
                 return visitor.visitChildren(self)
 
 
-    class AtomicContext(AggregationExprContext):
-
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.AggregationExprContext
-            super().__init__(parser)
-            self.child = None # AtomContext
-            self.copyFrom(ctx)
-
-        def atom(self):
-            return self.getTypedRuleContext(StreamParser.AtomContext,0)
-
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitAtomic" ):
-                return visitor.visitAtomic(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-    class GroupingContext(AggregationExprContext):
-
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.AggregationExprContext
-            super().__init__(parser)
-            self.child = None # ExprContext
-            self.copyFrom(ctx)
-
-        def expr(self):
-            return self.getTypedRuleContext(StreamParser.ExprContext,0)
-
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitGrouping" ):
-                return visitor.visitGrouping(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-    class IntContext(AggregationExprContext):
-
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a StreamParser.AggregationExprContext
-            super().__init__(parser)
-            self.child = None # Token
-            self.copyFrom(ctx)
-
-        def NUMBER(self):
-            return self.getToken(StreamParser.NUMBER, 0)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitInt" ):
-                return visitor.visitInt(self)
-            else:
-                return visitor.visitChildren(self)
-
-
 
     def aggregationExpr(self):
 
         localctx = StreamParser.AggregationExprContext(self, self._ctx, self.state)
         self.enterRule(localctx, 12, self.RULE_aggregationExpr)
         try:
-            self.state = 184
+            self.state = 207
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,8,self._ctx)
             if la_ == 1:
                 localctx = StreamParser.AtomicContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
-                self.state = 156
+                self.state = 160
                 localctx.child = self.atom()
                 pass
 
             elif la_ == 2:
                 localctx = StreamParser.IntContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 157
+                self.state = 161
                 localctx.child = self.match(StreamParser.NUMBER)
                 pass
 
             elif la_ == 3:
                 localctx = StreamParser.RealContext(self, localctx)
                 self.enterOuterAlt(localctx, 3)
-                self.state = 158
+                self.state = 162
                 localctx.child = self.match(StreamParser.REAL)
                 pass
 
             elif la_ == 4:
                 localctx = StreamParser.MinContext(self, localctx)
                 self.enterOuterAlt(localctx, 4)
-                self.state = 159
-                self.match(StreamParser.T__25)
-                self.state = 160
+                self.state = 163
+                self.match(StreamParser.T__26)
+                self.state = 164
                 localctx.child = self.aggregationExpr()
                 pass
 
             elif la_ == 5:
                 localctx = StreamParser.TimedMinContext(self, localctx)
                 self.enterOuterAlt(localctx, 5)
-                self.state = 161
-                self.match(StreamParser.T__25)
-                self.state = 162
-                self.match(StreamParser.T__13)
-                self.state = 163
-                localctx.l = self.match(StreamParser.NUMBER)
-                self.state = 164
-                self.match(StreamParser.T__15)
                 self.state = 165
+                self.match(StreamParser.T__26)
+                self.state = 166
+                self.match(StreamParser.T__13)
+                self.state = 167
+                localctx.l = self.match(StreamParser.NUMBER)
+                self.state = 168
+                self.match(StreamParser.T__15)
+                self.state = 169
                 localctx.child = self.aggregationExpr()
                 pass
 
             elif la_ == 6:
                 localctx = StreamParser.MaxContext(self, localctx)
                 self.enterOuterAlt(localctx, 6)
-                self.state = 166
-                self.match(StreamParser.T__26)
-                self.state = 167
+                self.state = 170
+                self.match(StreamParser.T__27)
+                self.state = 171
                 localctx.child = self.aggregationExpr()
                 pass
 
             elif la_ == 7:
                 localctx = StreamParser.TimedMaxContext(self, localctx)
                 self.enterOuterAlt(localctx, 7)
-                self.state = 168
-                self.match(StreamParser.T__26)
-                self.state = 169
-                self.match(StreamParser.T__13)
-                self.state = 170
-                localctx.l = self.match(StreamParser.NUMBER)
-                self.state = 171
-                self.match(StreamParser.T__15)
                 self.state = 172
+                self.match(StreamParser.T__27)
+                self.state = 173
+                self.match(StreamParser.T__13)
+                self.state = 174
+                localctx.l = self.match(StreamParser.NUMBER)
+                self.state = 175
+                self.match(StreamParser.T__15)
+                self.state = 176
                 localctx.child = self.aggregationExpr()
                 pass
 
             elif la_ == 8:
                 localctx = StreamParser.AvgContext(self, localctx)
                 self.enterOuterAlt(localctx, 8)
-                self.state = 173
-                self.match(StreamParser.T__27)
-                self.state = 174
+                self.state = 177
+                self.match(StreamParser.T__28)
+                self.state = 178
                 localctx.child = self.aggregationExpr()
                 pass
 
             elif la_ == 9:
                 localctx = StreamParser.TimedAvgContext(self, localctx)
                 self.enterOuterAlt(localctx, 9)
-                self.state = 175
-                self.match(StreamParser.T__27)
-                self.state = 176
-                self.match(StreamParser.T__13)
-                self.state = 177
-                localctx.l = self.match(StreamParser.NUMBER)
-                self.state = 178
-                self.match(StreamParser.T__15)
                 self.state = 179
+                self.match(StreamParser.T__28)
+                self.state = 180
+                self.match(StreamParser.T__13)
+                self.state = 181
+                localctx.l = self.match(StreamParser.NUMBER)
+                self.state = 182
+                self.match(StreamParser.T__15)
+                self.state = 183
                 localctx.child = self.aggregationExpr()
                 pass
 
             elif la_ == 10:
-                localctx = StreamParser.GroupingContext(self, localctx)
+                localctx = StreamParser.TimedDiffContext(self, localctx)
                 self.enterOuterAlt(localctx, 10)
-                self.state = 180
-                self.match(StreamParser.T__28)
-                self.state = 181
-                localctx.child = self.expr(0)
-                self.state = 182
+                self.state = 184
+                self.match(StreamParser.T__25)
+                self.state = 185
+                self.match(StreamParser.T__13)
+                self.state = 186
+                localctx.l = self.match(StreamParser.NUMBER)
+                self.state = 187
+                self.match(StreamParser.T__15)
+                self.state = 188
+                localctx.child = self.aggregationExpr()
+                pass
+
+            elif la_ == 11:
+                localctx = StreamParser.DeltaContext(self, localctx)
+                self.enterOuterAlt(localctx, 11)
+                self.state = 189
                 self.match(StreamParser.T__29)
+                self.state = 190
+                localctx.child = self.aggregationExpr()
+                pass
+
+            elif la_ == 12:
+                localctx = StreamParser.TimedDeltaContext(self, localctx)
+                self.enterOuterAlt(localctx, 12)
+                self.state = 191
+                self.match(StreamParser.T__29)
+                self.state = 192
+                self.match(StreamParser.T__13)
+                self.state = 193
+                localctx.l = self.match(StreamParser.NUMBER)
+                self.state = 194
+                self.match(StreamParser.T__15)
+                self.state = 195
+                localctx.child = self.aggregationExpr()
+                pass
+
+            elif la_ == 13:
+                localctx = StreamParser.CountContext(self, localctx)
+                self.enterOuterAlt(localctx, 13)
+                self.state = 196
+                self.match(StreamParser.T__30)
+                self.state = 197
+                localctx.child = self.aggregationExpr()
+                pass
+
+            elif la_ == 14:
+                localctx = StreamParser.TimedCountContext(self, localctx)
+                self.enterOuterAlt(localctx, 14)
+                self.state = 198
+                self.match(StreamParser.T__30)
+                self.state = 199
+                self.match(StreamParser.T__13)
+                self.state = 200
+                localctx.l = self.match(StreamParser.NUMBER)
+                self.state = 201
+                self.match(StreamParser.T__15)
+                self.state = 202
+                localctx.child = self.aggregationExpr()
+                pass
+
+            elif la_ == 15:
+                localctx = StreamParser.GroupingContext(self, localctx)
+                self.enterOuterAlt(localctx, 15)
+                self.state = 203
+                self.match(StreamParser.T__31)
+                self.state = 204
+                localctx.child = self.expr(0)
+                self.state = 205
+                self.match(StreamParser.T__32)
                 pass
 
 
@@ -1795,27 +2005,27 @@ class StreamParser ( Parser ):
         localctx = StreamParser.AtomContext(self, self._ctx, self.state)
         self.enterRule(localctx, 14, self.RULE_atom)
         try:
-            self.state = 192
+            self.state = 215
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,9,self._ctx)
             if la_ == 1:
                 localctx = StreamParser.PropContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
-                self.state = 186
+                self.state = 209
                 localctx.name = self.match(StreamParser.IDENTIFIER)
                 pass
 
             elif la_ == 2:
                 localctx = StreamParser.PredContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 187
+                self.state = 210
                 localctx.name = self.match(StreamParser.IDENTIFIER)
-                self.state = 188
-                self.match(StreamParser.T__28)
-                self.state = 189
+                self.state = 211
+                self.match(StreamParser.T__31)
+                self.state = 212
                 localctx.args = self.idlist()
-                self.state = 190
-                self.match(StreamParser.T__29)
+                self.state = 213
+                self.match(StreamParser.T__32)
                 pass
 
 
@@ -1860,17 +2070,17 @@ class StreamParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 194
+            self.state = 217
             localctx.param = self.match(StreamParser.IDENTIFIER)
-            self.state = 199
+            self.state = 222
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==StreamParser.T__14:
-                self.state = 195
+                self.state = 218
                 self.match(StreamParser.T__14)
-                self.state = 196
+                self.state = 219
                 localctx.param = self.match(StreamParser.IDENTIFIER)
-                self.state = 201
+                self.state = 224
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -1908,23 +2118,23 @@ class StreamParser ( Parser ):
         localctx = StreamParser.TypesContext(self, self._ctx, self.state)
         self.enterRule(localctx, 18, self.RULE_types)
         try:
-            self.state = 205
+            self.state = 228
             self._errHandler.sync(self)
             token = self._input.LA(1)
-            if token in [StreamParser.T__30]:
+            if token in [StreamParser.T__33]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 202
-                localctx.v = self.match(StreamParser.T__30)
+                self.state = 225
+                localctx.v = self.match(StreamParser.T__33)
                 pass
-            elif token in [StreamParser.T__31]:
+            elif token in [StreamParser.T__34]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 203
-                localctx.v = self.match(StreamParser.T__31)
+                self.state = 226
+                localctx.v = self.match(StreamParser.T__34)
                 pass
-            elif token in [StreamParser.T__32]:
+            elif token in [StreamParser.T__35]:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 204
-                localctx.v = self.match(StreamParser.T__32)
+                self.state = 227
+                localctx.v = self.match(StreamParser.T__35)
                 pass
             else:
                 raise NoViableAltException(self)

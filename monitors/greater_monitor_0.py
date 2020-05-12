@@ -8,7 +8,7 @@ from std_msgs.msg import *
 
 ws_lock = Lock()
 
-def callbacktwo_stream_diff_monitor_0(data):
+def callbacksoc_mission_(data):
 	ws_lock.acquire()
 	msg = TimedBool()
 	msg.time = data.time
@@ -19,9 +19,9 @@ def callbacktwo_stream_diff_monitor_0(data):
 
 def main(argv):
 	global pub, monitor
-	rospy.init_node('greater_monitor_1', anonymous=True)
-	pub = rospy.Publisher(name = 'greater_monitor_1', data_class = TimedBool, latch = True, queue_size = 1000)
-	rospy.Subscriber('two_stream_diff_monitor_0', TimedReal, callbacktwo_stream_diff_monitor_0)
+	rospy.init_node('greater_monitor_0', anonymous=True)
+	pub = rospy.Publisher(name = 'greater_monitor_0', data_class = TimedBool, latch = True, queue_size = 1000)
+	rospy.Subscriber('soc_mission_', TimedReal, callbacksoc_mission_)
 	rospy.spin()
 
 if __name__ == '__main__':

@@ -12,7 +12,7 @@ def callback(data):
 def main(argv):
 	global pub
 	rospy.init_node('monitor_t', anonymous=True)
-	rospy.Subscriber('tcount_monitor_2', TimedBool, callback)
+	rospy.Subscriber('and_monitor_15', TimedBool, callback)
 	pub = rospy.Publisher(name = 't', data_class = TimedBool, latch = True, queue_size = 1000)
 	rospy.spin()
 if __name__ == '__main__':

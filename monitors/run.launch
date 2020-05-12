@@ -1,9 +1,25 @@
 <launch>
+	<node pkg="stream" type="and_monitor_12.py" name="and_monitor_12" output="screen"/>
 	<node pkg="stream" type="clockNode.py" name="clockNode" output="screen"/>
-	<node pkg="stream" type="monitor_b.py" name="monitor_b" output="screen"/>
-	<node pkg="stream" type="greater_monitor_1.py" name="greater_monitor_1" output="screen"/>
 	<node pkg="stream" type="monitor_t.py" name="monitor_t" output="screen"/>
-	<node pkg="stream" type="monitor_a.py" name="monitor_a" output="screen"/>
-	<node pkg="stream" type="two_stream_diff_monitor_0.py" name="two_stream_diff_monitor_0" output="screen"/>
-	<node pkg="stream" type="tcount_monitor_2.py" name="tcount_monitor_2" output="screen"/>
+	<node pkg="stream" type="mtl_monitor_8.py" name="mtl_monitor_8" output="screen"/>
+	<node pkg="stream" type="monitor_soc_mission.py" name="monitor_soc_mission" output="screen"/>
+	<node pkg="stream" type="mtl_monitor_14.py" name="mtl_monitor_14" output="screen"/>
+	<node pkg="stream" type="mtl_monitor_11.py" name="mtl_monitor_11" output="screen"/>
+	<node pkg="stream" type="monitor_soc_true.py" name="monitor_soc_true" output="screen"/>
+	<node pkg="stream" type="greater_monitor_13.py" name="greater_monitor_13" output="screen"/>
+	<node pkg="stream" type="monitor_soc_est.py" name="monitor_soc_est" output="screen"/>
+	<node pkg="stream" type="and_monitor_9.py" name="and_monitor_9" output="screen"/>
+	<node pkg="stream" type="greater_monitor_3.py" name="greater_monitor_3" output="screen"/>
+	<node pkg="stream" type="mtl_monitor_4.py" name="mtl_monitor_4" output="screen"/>
+	<node pkg="stream" type="mtl_monitor_5.py" name="mtl_monitor_5" output="screen"/>
+	<node pkg="stream" type="mtl_monitor_2.py" name="mtl_monitor_2" output="screen"/>
+	<node pkg="stream" type="greater_monitor_7.py" name="greater_monitor_7" output="screen"/>
+	<node pkg="stream" type="greater_monitor_0.py" name="greater_monitor_0" output="screen"/>
+	<node pkg="stream" type="and_monitor_15.py" name="and_monitor_15" output="screen"/>
+	<node pkg="stream" type="monitor_soc_m.py" name="monitor_soc_m" output="screen"/>
+	<node pkg="stream" type="mtl_monitor_1.py" name="mtl_monitor_1" output="screen"/>
+	<node pkg="stream" type="greater_monitor_10.py" name="greater_monitor_10" output="screen"/>
+	<node pkg="stream" type="monitor_soc_corr.py" name="monitor_soc_corr" output="screen"/>
+	<node pkg="stream" type="and_monitor_6.py" name="and_monitor_6" output="screen"/>
 </launch>

@@ -9,14 +9,14 @@ from std_msgs.msg import *
 ws_lock = Lock()
 
 dict_msgs = SortedDict()
-def callbackand_monitor_9(data):
+def callbackor_monitor_0(data):
 	ws_lock.acquire()
 	if data.time not in dict_msgs:
 		dict_msgs[data.time] = set()
 	dict_msgs[data.time].add(('l', data.value))
 	conditional_publish()
 	ws_lock.release()
-def callbackmtl_monitor_11(data):
+def callbackred(data):
 	ws_lock.acquire()
 	if data.time not in dict_msgs:
 		dict_msgs[data.time] = set()
@@ -33,9 +33,9 @@ def conditional_publish():
 		msg = TimedBool()
 		msg.time = dict_msgs.peekitem(0)[0]
 		if e1[0] == 'l':
-			msg.value = (e1[1]  and  e2[1])
+			msg.value = (e1[1]  or  e2[1])
 		else:
-			msg.value = (e2[1]  and  e1[1])
+			msg.value = (e2[1]  or  e1[1])
 		pub.publish(msg)
 		dict_msgs.popitem(0)
 		attempts = 0
@@ -47,10 +47,10 @@ def conditional_publish():
 
 def main(argv):
 	global pub, monitor
-	rospy.init_node('and_monitor_12', anonymous=True)
-	pub = rospy.Publisher(name = 'and_monitor_12', data_class = TimedBool, latch = True, queue_size = 1000)
-	rospy.Subscriber('and_monitor_9', TimedBool, callbackand_monitor_9)
-	rospy.Subscriber('mtl_monitor_11', TimedBool, callbackmtl_monitor_11)
+	rospy.init_node('or_monitor_1', anonymous=True)
+	pub = rospy.Publisher(name = 'or_monitor_1', data_class = TimedBool, latch = True, queue_size = 1000)
+	rospy.Subscriber('or_monitor_0', TimedBool, callbackor_monitor_0)
+	rospy.Subscriber('red', TimedBool, callbackred)
 	rospy.spin()
 
 if __name__ == '__main__':

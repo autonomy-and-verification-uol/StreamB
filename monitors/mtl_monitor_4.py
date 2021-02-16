@@ -34,25 +34,25 @@ class BaseMonitor:
 class mtl_monitor_4(BaseMonitor):
 
 	time = -1
-	states = [True]
+	states = [intervals.empty()]
 
 	def update(self, **kwargs):
 
 		self.time = self.time + 1
-		self.states[0] = self.states[0] and kwargs['greater_monitor_3'];
+		self.states[0] = self.update_timed_since(self.time, self.states[0], True, not kwargs['greater_eq_monitor_3'], 0, 10)
 
-		return self.states[0]
+		return not(self.output_timed(self.states[0]))
 
 	def output(self):
-		return self.states[0]
+		return not(self.output_timed(self.states[0]))
 
 
 dict_msgs = SortedDict()
-def callbackgreater_monitor_3(data):
+def callbackgreater_eq_monitor_3(data):
 	ws_lock.acquire()
 	if data.time not in dict_msgs:
 		dict_msgs[data.time] = set()
-	dict_msgs[data.time].add(('greater_monitor_3', data.value))
+	dict_msgs[data.time].add(('greater_eq_monitor_3', data.value))
 	conditional_publish()
 	ws_lock.release()
 
@@ -78,7 +78,7 @@ def main(argv):
 	global pub, monitor
 	rospy.init_node('mtl_monitor_4', anonymous=True)
 	monitor = mtl_monitor_4()
-	rospy.Subscriber('greater_monitor_3', TimedBool, callbackgreater_monitor_3)
+	rospy.Subscriber('greater_eq_monitor_3', TimedBool, callbackgreater_eq_monitor_3)
 	pub = rospy.Publisher(name = 'mtl_monitor_4', data_class = TimedBool, latch = True, queue_size = 1000)
 	rospy.spin()
 if __name__ == '__main__':

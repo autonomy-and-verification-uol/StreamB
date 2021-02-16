@@ -1,5 +1,6 @@
 from builder import *
 from antlr4.error.ErrorListener import ErrorListener
+import sys
 
 class StreamErrorListener( ErrorListener ):
 
@@ -43,3 +44,9 @@ def parseFile(file):
     with open(file, 'r') as content_file:
         pattern = content_file.read()
     parse(pattern)
+
+def main(args):
+    parseFile(args[1])
+
+if __name__ == '__main__':
+	main(sys.argv)

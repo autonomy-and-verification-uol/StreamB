@@ -464,17 +464,17 @@ class StreamBuilder(StreamVisitor):
     def visitOr(self, ctx:StreamParser.OrContext):
         self.reset()
         self.output = self.visit(ctx.left) # visit left operand
-        if isinstance(ctx.left, (StreamParser.EvaluationContext, StreamParser.AndContext, StreamParser.OrContext)):
-            labelL = self.output
-        else:
-            labelL = self.createMTLMonitor() # create the corresponding MTL monitor
+        # if isinstance(ctx.left, (StreamParser.EvaluationContext, StreamParser.AndContext, StreamParser.OrContext)):
+        labelL = self.output
+        # else:
+            # labelL = self.createMTLMonitor() # create the corresponding MTL monitor
         typeL = self.type
         self.reset()
         self.output = self.visit(ctx.right) # visit right operand
-        if isinstance(ctx.left, (StreamParser.EvaluationContext, StreamParser.AndContext, StreamParser.OrContext)):
-            labelR = self.output
-        else:
-            labelR = self.createMTLMonitor() # create the corresponding MTL monitor
+        # if isinstance(ctx.left, (StreamParser.EvaluationContext, StreamParser.AndContext, StreamParser.OrContext)):
+        labelR = self.output
+        # else:
+            # labelR = self.createMTLMonitor() # create the corresponding MTL monitor
         typeR = self.type
         operator = ' or '
         self.type = 'TimedBool'
@@ -484,8 +484,8 @@ class StreamBuilder(StreamVisitor):
             # create the composition monitor for and
             self.createCompositionMonitor('or_monitor_' + str(self.nMonitors), labelL, labelR, typeL, typeR, operator)
             self.nMonitors += 1
-            self.already_seen[labelL + operator + labelR] = 'kwargs[\'and_monitor_' + str(self.nMonitors - 1) + '\']'
-            return 'kwargs[\'and_monitor_' + str(self.nMonitors - 1) + '\']'
+            self.already_seen[labelL + operator + labelR] = 'kwargs[\'or_monitor_' + str(self.nMonitors - 1) + '\']'
+            return 'kwargs[\'or_monitor_' + str(self.nMonitors - 1) + '\']'
 
     # propagate the visit to the lower expression
     def visitEvaluation(self, ctx:StreamParser.EvaluationContext):
@@ -749,10 +749,12 @@ class StreamBuilder(StreamVisitor):
         statements += ['\treturn avg']
 
         aggrFunc = '\n'.join(statements)
-
+        print('HERE1')
         if 'avg' + label in self.already_seen:
+            print('HERE2')
             return 'kwargs[\'' + self.already_seen['avg' + label] + '\']'
         else:
+            print('HERE3')
             self.createAggregationMonitor('avg_monitor_' + str(self.nMonitors), aggrFunc, self.type, label)
             self.already_seen['avg' + label] = 'avg_monitor_' + str(self.nMonitors)
             self.nMonitors += 1
@@ -782,7 +784,7 @@ class StreamBuilder(StreamVisitor):
         statements += ['\twhile values.qsize() > {interval}:'.format(interval=interval)]
         statements += ['\t\tvalues.get()']
         statements += ['\tavg = 0']
-        statements += ['\tfor i in range({interval}):'.format(interval)]
+        statements += ['\tfor i in range({interval}):'.format(interval=interval)]
         statements += ['\t\tv = values.get()']
         statements += ['\t\tvalues.put(v)']
         statements += ['\t\tavg = avg + (v - avg) / (i + 1)']
@@ -1004,10 +1006,9 @@ class StreamBuilder(StreamVisitor):
         name = ctx.name.text
 
         if name in self.types:
+            self.type = self.types[name]
             if name in self.already_seen:
                 return 'kwargs[\'' + self.already_seen[name] + '\']'
-
-            self.type = self.types[name]
 
             monitorName = 'monitor_' + name
 
@@ -1059,6 +1060,7 @@ class StreamBuilder(StreamVisitor):
 
             return 'kwargs[\'{}\']'.format(name + '_')
         else:
+            self.type = 'TimedBool'
             return 'kwargs[\'{}\']'.format(name)
 
     # visit integer
@@ -1202,7 +1204,6 @@ class StreamBuilder(StreamVisitor):
         self.initialization.append('intervals.empty()')
         self.statements.append('{label} = self.update_timed_since(self.time, {label}, True, not {right}, {min_val}, {max_val})'.format(label=label, right=child, min_val=min_val, max_val=max_val))
         self.num = self.num + 1
-
         return 'not(self.output_timed({}))'.format(label)
 
     # visit (always [l,inf] expr)

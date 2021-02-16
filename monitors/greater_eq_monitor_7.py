@@ -8,20 +8,20 @@ from std_msgs.msg import *
 
 ws_lock = Lock()
 
-def callbacksoc_true_(data):
+def callbacktavg_monitor_2(data):
 	ws_lock.acquire()
 	msg = TimedBool()
 	msg.time = data.time
-	msg.value = data.value  >  0
+	msg.value = data.value  >=  250
 	pub.publish(msg)
 	ws_lock.release()
 
 
 def main(argv):
 	global pub, monitor
-	rospy.init_node('greater_monitor_3', anonymous=True)
-	pub = rospy.Publisher(name = 'greater_monitor_3', data_class = TimedBool, latch = True, queue_size = 1000)
-	rospy.Subscriber('soc_true_', TimedReal, callbacksoc_true_)
+	rospy.init_node('greater_eq_monitor_7', anonymous=True)
+	pub = rospy.Publisher(name = 'greater_eq_monitor_7', data_class = TimedBool, latch = True, queue_size = 1000)
+	rospy.Subscriber('tavg_monitor_2', TimedReal, callbacktavg_monitor_2)
 	rospy.spin()
 
 if __name__ == '__main__':

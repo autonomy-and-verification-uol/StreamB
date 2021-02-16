@@ -1,0 +1,6 @@
+radiation: real;
+
+danger = yellow or orange or red;
+yellow = always [0, 10] ((avg [3] radiation) >= 80);
+orange = always [0, 5] ((avg [3] radiation) >= 120);
+red = always [0, 3] ((avg [3] radiation) >= 250);

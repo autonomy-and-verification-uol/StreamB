@@ -10,8 +10,8 @@ class StreamErrorListener( ErrorListener ):
     def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
         raise Exception("Syntax error: " + msg)
 
-def resetMonitorsFolder():
-    folder = './monitors'
+def resetTransducersFolder():
+    folder = './transducers'
     if not os.path.exists(folder):
         os.mkdir(folder)
     for filename in os.listdir(folder):
@@ -26,7 +26,7 @@ def resetMonitorsFolder():
 
 def parse(pattern):
     try:
-        resetMonitorsFolder()
+        resetTransducersFolder()
         lexer = StreamLexer(InputStream(pattern))
         stream = CommonTokenStream(lexer)
         parser = StreamParser(stream)

@@ -11,8 +11,8 @@ def callback(data):
 
 def main(argv):
 	global pub
-	rospy.init_node('monitor_red', anonymous=True)
-	rospy.Subscriber('mtl_monitor_8', TimedBool, callback)
+	rospy.init_node('transducer_red', anonymous=True)
+	rospy.Subscriber('mtl_transducer_8', TimedBool, callback)
 	pub = rospy.Publisher(name = 'red', data_class = TimedBool, latch = True, queue_size = 1000)
 	rospy.spin()
 if __name__ == '__main__':

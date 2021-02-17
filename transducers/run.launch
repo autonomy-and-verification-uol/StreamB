@@ -1,0 +1,17 @@
+<launch>
+	<node pkg="stream" type="tavg_transducer_2.py" name="tavg_transducer_2" output="screen"/>
+	<node pkg="stream" type="clockNode.py" name="clockNode" output="screen"/>
+	<node pkg="stream" type="mtl_transducer_8.py" name="mtl_transducer_8" output="screen"/>
+	<node pkg="stream" type="or_transducer_1.py" name="or_transducer_1" output="screen"/>
+	<node pkg="stream" type="greater_eq_transducer_3.py" name="greater_eq_transducer_3" output="screen"/>
+	<node pkg="stream" type="transducer_danger.py" name="transducer_danger" output="screen"/>
+	<node pkg="stream" type="transducer_orange.py" name="transducer_orange" output="screen"/>
+	<node pkg="stream" type="mtl_transducer_6.py" name="mtl_transducer_6" output="screen"/>
+	<node pkg="stream" type="transducer_red.py" name="transducer_red" output="screen"/>
+	<node pkg="stream" type="transducer_yellow.py" name="transducer_yellow" output="screen"/>
+	<node pkg="stream" type="mtl_transducer_4.py" name="mtl_transducer_4" output="screen"/>
+	<node pkg="stream" type="greater_eq_transducer_5.py" name="greater_eq_transducer_5" output="screen"/>
+	<node pkg="stream" type="or_transducer_0.py" name="or_transducer_0" output="screen"/>
+	<node pkg="stream" type="transducer_radiation.py" name="transducer_radiation" output="screen"/>
+	<node pkg="stream" type="greater_eq_transducer_7.py" name="greater_eq_transducer_7" output="screen"/>
+</launch>

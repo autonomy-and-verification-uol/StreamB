@@ -9,14 +9,14 @@ from std_msgs.msg import *
 ws_lock = Lock()
 
 dict_msgs = SortedDict()
-def callbackor_monitor_0(data):
+def callbackyellow(data):
 	ws_lock.acquire()
 	if data.time not in dict_msgs:
 		dict_msgs[data.time] = set()
 	dict_msgs[data.time].add(('l', data.value))
 	conditional_publish()
 	ws_lock.release()
-def callbackred(data):
+def callbackorange(data):
 	ws_lock.acquire()
 	if data.time not in dict_msgs:
 		dict_msgs[data.time] = set()
@@ -46,11 +46,11 @@ def conditional_publish():
 		attempts += 1
 
 def main(argv):
-	global pub, monitor
-	rospy.init_node('or_monitor_1', anonymous=True)
-	pub = rospy.Publisher(name = 'or_monitor_1', data_class = TimedBool, latch = True, queue_size = 1000)
-	rospy.Subscriber('or_monitor_0', TimedBool, callbackor_monitor_0)
-	rospy.Subscriber('red', TimedBool, callbackred)
+	global pub, transducer
+	rospy.init_node('or_transducer_0', anonymous=True)
+	pub = rospy.Publisher(name = 'or_transducer_0', data_class = TimedBool, latch = True, queue_size = 1000)
+	rospy.Subscriber('yellow', TimedBool, callbackyellow)
+	rospy.Subscriber('orange', TimedBool, callbackorange)
 	rospy.spin()
 
 if __name__ == '__main__':

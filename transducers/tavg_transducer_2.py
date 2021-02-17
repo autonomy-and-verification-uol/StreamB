@@ -43,9 +43,9 @@ def callbackradiation_(data):
 	pub.publish(msg)
 	ws_lock.release()
 def main(argv):
-	global pub, monitor
-	rospy.init_node('tavg_monitor_2', anonymous=True)
-	pub = rospy.Publisher(name = 'tavg_monitor_2', data_class = TimedReal, latch = True, queue_size = 1000)
+	global pub, transducer
+	rospy.init_node('tavg_transducer_2', anonymous=True)
+	pub = rospy.Publisher(name = 'tavg_transducer_2', data_class = TimedReal, latch = True, queue_size = 1000)
 	rospy.Subscriber('radiation_', TimedReal, callbackradiation_)
 	rospy.spin()
 

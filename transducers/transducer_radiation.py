@@ -24,7 +24,7 @@ def callbackClock(data):
 
 def main(argv):
 	global pub
-	rospy.init_node('monitor_radiation', anonymous=True)
+	rospy.init_node('transducer_radiation', anonymous=True)
 	rospy.Subscriber('radiation', Float64, callback)
 	rospy.Subscriber('stream_clock', Int64, callbackClock)
 	pub = rospy.Publisher(name = 'radiation_', data_class = TimedReal, latch = True, queue_size = 1000)

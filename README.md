@@ -1,6 +1,5 @@
 # Stream Processing RV
 
-
 Small Python implementation to create runtime monitors to achieve Stream Processing of MTL properties.
 
 How to use:
@@ -15,7 +14,7 @@ $ stream.parseFile('<path_to_your_file>')
 To create Parser:
 
 ```bash
-$ antlr4 -Dlanguage=Python3 -visitor -no-listener Stream.g4 
+$ antlr4 -Dlanguage=Python3 -visitor -no-listener Stream.g4
 ```
 
 # Credits

@@ -1,15 +1,18 @@
-# Stream Processing RV
+# StreamB
 
-Small Python implementation to create runtime monitors to achieve Stream Processing of MTL properties.
+Python implementation of StreamB using python ROS library.
+
+What to install:
+- ROS http://wiki.ros.org/it/ROS/Installation (with python)
 
 How to use:
 
 ```bash
-$ python3
-$ import stream
-$ stream.parse('<your_property>')
-$ stream.parseFile('<path_to_your_file>')
+$ python3 stream.py <specification_file>
 ```
+Where <specification_file> is the path to the specification file where the beliefs are defined using StreamB syntax.
+
+The execution will generate a folder containing all ROS-node transducers. Among these nodes, a launch file will be created for a simplified use.
 
 To create Parser:
 

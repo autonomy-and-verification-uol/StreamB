@@ -2,6 +2,12 @@
 
 Python implementation of StreamB using python ROS library.
 
+Further reading:
+
+Angelo Ferrando, Fabio Papacchini:
+StreamB: A Declarative Language for Automatically Processing Data Streams in Abstract Environments for Agent Platforms. EMAS@AAMAS 2021: 114-136
+
+
 What to install:
 - ROS http://wiki.ros.org/it/ROS/Installation (with python)
 

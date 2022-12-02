@@ -2,16 +2,16 @@
 
 Python implementation of StreamB using python ROS library.
 
-Further reading:
+## Citation
 
 Angelo Ferrando, Fabio Papacchini:
 StreamB: A Declarative Language for Automatically Processing Data Streams in Abstract Environments for Agent Platforms. EMAS@AAMAS 2021: 114-136
+https://link.springer.com/chapter/10.1007/978-3-030-97457-2_7
 
-
-What to install:
+## What to install:
 - ROS http://wiki.ros.org/it/ROS/Installation (with python)
 
-How to use:
+## How to use:
 
 ```bash
 $ python3 stream.py <specification_file>
@@ -26,6 +26,6 @@ To create Parser:
 $ antlr4 -Dlanguage=Python3 -visitor -no-listener Stream.g4
 ```
 
-# Credits
+## Credits
 
 To https://github.com/doganulus/python-monitors for the MTL Parser.
